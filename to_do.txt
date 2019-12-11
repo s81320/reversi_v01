@@ -1,0 +1,8 @@
+to do
+
+
+5.12.2019
+how to write tests in Python
+https://pythontesting.net/framework/doctest/doctest-introduction/
+
+get familiar with intelliJ IDE, watch youtube :-)

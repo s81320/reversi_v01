@@ -1,0 +1,394 @@
+import numpy as np
+import matplotlib.pyplot as plt
+#run with python or pythonw (for MacOS)
+
+
+class Player:
+	# class variables, shared by all instances of this class
+	numPlayers = 0 
+	maxNumPlayers : int  
+
+
+	# class variable maxNumPlayers has to be set before calling __init__
+	def __init__(self):
+		print("anzahl gewünschte Spieler: " , self.maxNumPlayers)
+		# variables local to each created object
+		self.number = Player.numPlayers 
+		self.highScore = 0
+		Player.numPlayers = Player.numPlayers + 1
+		if self.number == Player.maxNumPlayers -1 :
+			print("genügend Player vorhanden.")
+		if self.number > Player.maxNumPlayers -1 :
+			print("zu viele Player. Oder Turniermodus. Oder losen, wer gegen wen spielt. Oder queueing for playing :-)")
+		self.lastStoneAccepted = True
+
+	def put_stone(self):
+		"""asks a player to give two integers as coordinates where to put his/her stone.
+		returns a position as a tuple or the string 'quit' """
+		pos=[-1,-1]
+		print("Type of pos " , type(pos))
+		print("Du bist" , self.getMyNumber())
+		for i in range(2):
+			pos[i] = input(f"gib { i +1 } -te Koordinate der Position an: ")
+			print("whatever ...")
+			accept = False
+			while (not accept) and not (pos[i] == 'quit'):
+				try:
+					int(pos[i])
+					accept = True
+					print("in try")
+				except ValueError:
+					pos[i] = input("gib eine Zahl (Integer) ein oder schreibe quit:")
+			if pos[i] == 'quit':
+				print("exit input by typing quit. do something, interrupt whatever.")
+				pos='quit'
+			else:
+				pos = [int(pos[0]),int(pos[1])]
+		return pos
+
+	def setColor(self, color):
+		self.color = color
+		print("I chose " + str(color))
+
+	def getNumPlayer(self):
+		return numPlayers
+
+	def setNumPlayers(self, numPlayers):
+		self.numPlayers = numPlayers
+
+	### used to be
+	# def setNumPlayers(numPlayers):
+	# setzt Klassenvariable, kein self im Argument! Mit self funktioniert es nicht.
+	# numPlayers = numPlayers
+
+	@classmethod
+	def set_max_number_of_players (class_ , a_number):
+		class_.maxNumPlayers = a_number
+
+
+	def getMyNumber (self):
+		return int(self.number)
+
+	def getOtherPlayerNumber(self):
+		"""works for 2 players only"""
+		return int((1 + self.number)%2)
+
+
+class Brett:
+	"""Brett soll das Model(l) sein, die Daten des Spieles enthalten. Von der Klasse soll es nur ein Objekt geben (Singleton?)."""
+	# wenn es nur ein Objekt dieser Klasse gibt, wozu in Klassen- und Objektvariablen unterscheiden?
+	#size = 6 
+	# brett is a dictionary with key a tupel of integers. 
+	# the value is 0 when empty, 1 when carrying a stone of player 1, 2 when carrying a stone of player 2
+	# values are accessed or set through brett[(1,2)]
+
+	def __init__(self, size):
+		self.size = size
+		self.brett = {(k,l):-1 for k in range(self.size) for l in range(self.size)}
+		self.score = [] # empty list 
+		self.acceptedStone = (-1,-1)
+		self.maxNumberStones = self.size * self.size
+
+	#def setColor (self, color):	
+
+	def update_scores(self):
+		self.score = [0,0]
+		
+		b = list(self.brett.values())
+		for i in range(2):
+			self.score[i] = sum( 1 for j in range(len(b)) if b[j] == i )
+
+	def get_scores(self):
+		return self.score
+
+	def updateBrett(self, id ):
+		"""When a player has put a new stone on the board newly includes / cought stones turn change color"""
+		newStone = self.acceptedStone
+		directions = self.getDirections(newStone)
+
+		dirTouchOpponent = []
+
+		for direction in directions:
+			if self.brett[ tuple( x + y for x,y in zip( newStone , direction) ) ] == (1 + id)%2 :
+				dirTouchOpponent.append(direction)
+		print("dir touch opponent " , dirTouchOpponent )
+
+		dirEncloseOpponent = []
+
+		for direction in dirTouchOpponent:
+			pos = newStone
+			print("initial position " , pos )
+			enclose = False
+			dicided = False
+			while not dicided :
+				try:
+					nextField = self.brett[ tuple( x + y for x,y in zip(pos , direction) ) ] 
+				except KeyError:
+					dicided = True
+
+				if nextField == (1 + id)%2 :
+					pos = tuple( x + y for x,y in zip(pos , direction))
+					print("new position " , pos)
+				elif nextField == id :
+					dirEncloseOpponent.append(direction)
+					enclose = True
+					dicided = True 
+				else:
+					dicided = True
+	
+		for direction in dirEncloseOpponent:
+			pos = newStone 
+			done = False
+			while not done:
+				nextStoneInLine = tuple( x + y for x,y in zip(pos , direction) )
+				if self.brett[ nextStoneInLine ] == (1 + id)%2: 
+					self.brett[ nextStoneInLine ] = id
+					pos= nextStoneInLine
+				else:
+					done = True
+
+	def printBrett(self):
+		# it would be nice just to add one point innstead of printing all again from scratch
+		k,v = zip(*self.brett.items())
+		a = [k for k, v in self.brett.items() if v == 0]
+		b = [k for k, v in self.brett.items() if v == 1]
+		plt.plot([0,self.size-1,0,self.size-1],[0,0,self.size-1,self.size-1], marker= 'x', ls='')
+		plt.plot(*zip(*a), marker='o', color='r', ls='')
+		plt.plot(*zip(*b), marker='o', color='b', ls='')
+
+		plt.draw()
+		plt.show(block=False)
+
+
+	def checkStone(self, id , position):
+		print("in Brett : check Stone")
+		# not catching the position outt of bounds, also zu groß
+		# return brett.checkPositionExists(position) & brett.checkPositionFree(position) & brett.checkEncloseOpponent( id , position)
+		if self.checkPositionExists(position):
+			if self.checkPositionFree(position):
+				if self.checkEncloseOpponent( id , position):
+					print("checkStone: OK")
+					return True
+		
+		return False
+
+
+	def checkPositionExists(self, position):
+		print("in Brett : check position exists")
+		if (( position[0] in range(self.size)) & (position[1] in range(self.size))):
+			return True
+		else:
+			return False	
+
+	def checkPositionFree(self, position):
+		print("in Brett : check position free")
+		try:
+			return self.brett[position] == -1
+		except KeyError:
+			return False
+
+	def getDirections(self, position): 
+		allDirections = [(1,0),(-1,0),(0,1),(0,-1),(-1,-1),(-1,1),(1,1),(1,-1)]
+		
+		d2 = [[ x + y for x,y in zip(position , direction) if x+y in range(self.size) ] for direction in allDirections ]
+		# for a position and direction: if the go beyond the brett it maybe only one coordinate is affected
+		# first only this coordinate is removed. Resulting in tupels of length 0 or 1.
+		# these shorter tupels are then removed
+		mask = [ len(d) == 2 for d in d2]
+		# Problem with masking: arrays can be masked, lists cannot
+
+		validDirections = [allDirections[i] for i in range(8) if mask[i]== True]
+		# print("directions d2: " , directions)
+
+		return validDirections
+
+
+	def checkEncloseOpponent(self , id , position):
+		
+		print("in Brett : check enclose opponent")
+
+		directions = self.getDirections(position)
+
+		dirTouchOpponent = []
+
+		for direction in directions:
+			if self.brett[ tuple( x + y for x,y in zip(position , direction) ) ] == (1+id)%2  :
+				dirTouchOpponent.append(direction)
+		print("dir touch opponent " , dirTouchOpponent )
+
+
+		if len(dirTouchOpponent) == 0:
+			return False
+
+		dirEncloseOpponent = []
+
+		for direction in dirTouchOpponent:
+			pos = position 
+			print("initial position " , pos )
+			enclose = False
+			dicided = False
+			while not dicided :
+				try:
+					nextField = self.brett[ tuple( x + y for x,y in zip(pos , direction) ) ] 
+				except KeyError:
+					dicided = True
+
+				if nextField == (1+id)%2 :
+					pos = tuple( x + y for x,y in zip(pos , direction))
+					print("new position " , pos)
+				elif nextField == id :
+					return True
+				else:
+					dicided = True
+		
+		return False
+
+		# check that the set stone is adjacent to a stone of the opponent
+		# check that there exists a direction such that in that direction 
+		# at some point lies a stone of the same colour as the set stone 
+
+
+
+	def setStone(self, player , position):
+		myId = player.getMyNumber()
+		if self.checkStone(myId , position): 
+			self.brett[position] = myId
+			self.acceptedStone = position
+			player.lastStoneAccepted = True
+			return True
+		else:
+			print("Stone rejected.")
+			return False
+
+	def startBrett(self):
+
+		self.setStone(1,(2,2))
+		self.setStone(1,(2,3))	
+		self.setStone(2,(3,2))
+		self.setStone(2,(3,3))	
+
+	def controlNewPosition(self, id, position):
+		pass
+		
+class Host:
+	
+	def __init__(self):
+		self.my_board : Board
+		self.my_player : list
+
+	def createBoard(self, size):
+		self.my_board = Brett(size)
+		return self.my_board
+
+	def setupBoard(self):
+		"""soll man nicht machen: direkt auf die Daten zugreifen. Besser: Methode benutzen!"""
+		self.my_board.brett[(1,1)] = 0
+		self.my_board.brett[(1,2)] = 0	
+		self.my_board.brett[(2,2)] = 1
+		self.my_board.brett[(2,1)] = 1		
+	# this should return something??	
+
+	def invitePlayers(self):
+		pass
+
+	def create_players(self,some_number):
+		# set class variable first
+		Player.set_max_number_of_players(some_number)
+
+		p=[]
+		for i in range(some_number):
+			p.append( Player() )	
+
+		self.my_player = p 
+
+		return p	
+
+	def evaluate_stone(self , player , position): 
+		"""Check stone and if OK set stone on board"""
+		print("Übergebene Parameter ***") 
+		print(list(self.my_board.brett.values()))
+		print(player.getMyNumber)
+		print(position)
+		print("in host : evaluate stone")
+		if self.my_board.checkStone(player.getMyNumber(), tuple(position)) == True:
+			if self.my_board.setStone(player , tuple(position)):
+				player.lastStoneAccepted = True
+				return 1
+		else:
+			return 0
+
+	# def game_on(self):
+	# return whether the game should go on.
+	# is the next player allowed to continue ??
+	# return True or False
+
+	@staticmethod
+	def next(i):
+		return ((1 + i)%2)
+def main ():
+
+	print("Starte das Spiel")
+
+	h = Host()
+
+	b = h.createBoard(4)
+
+	h.setupBoard()
+
+	p = h.create_players(2)
+
+	print(b.printBrett())
+
+	b.update_scores()
+	print("Punkte:" , b.get_scores())
+
+	# for schleife muss werden zu:
+	# while continue mit Abbruchbedingung
+
+	game_on = True
+	stones_set = 4  # for stones initially set when setting up the board
+
+	current = 0
+	last = 0
+	maxNumberOfTurns = b.maxNumberStones # define getter for max_number_of_stones 
+	# better: move it all into Host or Board !!
+
+	while game_on :
+		
+		number_of_rejects = 0 
+		#p[current].put_stone()
+		while (h.evaluate_stone(p[current] , p[current].put_stone()) == 0 ) and (number_of_rejects < 2) :
+			number_of_rejects += 1
+
+		if number_of_rejects < 2:
+			stones_set += 1
+		else:
+			p[current].lastStoneAccepted = False
+			print("Failure to set a stone recorded")
+
+		b.updateBrett(p[current].getMyNumber())
+
+		print(b.printBrett())
+
+		b.update_scores()
+		print("Punkte:" , b.get_scores())
+
+		last = current 
+		current = h.next(current)
+
+		game_on = ( p[last].lastStoneAccepted or p[current].lastStoneAccepted ) and (stones_set < maxNumberOfTurns)
+
+	print("game over")
+	b.updateBrett()
+	print("Punkte:" , b.get_scores())
+	# the host should announce the winner
+
+
+	# Funktioniert nicht, die Eingabe zu prüfen. 
+	# Eingabe 9,9 produziert Keyvalue Error und wird nicht abgefangen
+
+	# Fehlt noch: Prüfen auf zulässigkeit: 
+	# Steine des anderen Players müssen eingeschlossen werden
+
+if __name__== "__main__":
+  main()

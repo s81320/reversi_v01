@@ -1,0 +1,18 @@
+
+8.12.2019
+wrote first test for reversi
+
+5.12.2019
+class Player setNumPlayers
+
+line 63
+
+@classmethod
+for set max number of players in class Player
+
+line 306 definition
+use my_board in class Host in method evaluate stone
+
+line 360 method is called
+
+removing player and using self.my_player is more difficult? need to know which player...
