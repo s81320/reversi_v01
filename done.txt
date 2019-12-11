@@ -1,0 +1,2 @@
+done
+set up a github repository for reversi
