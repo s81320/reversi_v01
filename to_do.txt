@@ -1,5 +1,10 @@
 to do
 
+11.12.2019
+refacture the code: 
+rename functions to fit naming convention like set_stone instead of setStone
+rename functions and attributes to english only. No more brett or Brett.
+
 
 5.12.2019
 how to write tests in Python
