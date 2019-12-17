@@ -1,2 +1,3 @@
 done
+used mediator pattern
 set up a github repository for reversi
