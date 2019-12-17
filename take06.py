@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 #run with python or pythonw (for MacOS)
 
 
+# __all__ = ['Host', 'Player', 'Board']
+
 class Player:
 	# class variables, shared by all instances of this class
 	numPlayers = 0 
@@ -10,7 +12,8 @@ class Player:
 
 
 	# class variable maxNumPlayers has to be set before calling __init__
-	def __init__(self):
+	def __init__(self, host):
+		self.my_host = host
 		print("anzahl gewünschte Spieler: " , self.maxNumPlayers)
 		# variables local to each created object
 		self.number = Player.numPlayers 
@@ -82,7 +85,8 @@ class Brett:
 	# the value is 0 when empty, 1 when carrying a stone of player 1, 2 when carrying a stone of player 2
 	# values are accessed or set through brett[(1,2)]
 
-	def __init__(self, size):
+	def __init__(self, host, size: int):
+		self.my_host = host
 		self.size = size
 		self.brett = {(k,l):-1 for k in range(self.size) for l in range(self.size)}
 		self.score = [] # empty list 
@@ -277,7 +281,7 @@ class Host:
 		self.my_player : list
 
 	def createBoard(self, size):
-		self.my_board = Brett(size)
+		self.my_board = Brett(self, size)
 		return self.my_board
 
 	def setupBoard(self):
@@ -297,7 +301,7 @@ class Host:
 
 		p=[]
 		for i in range(some_number):
-			p.append( Player() )	
+			p.append( Player(self) )	
 
 		self.my_player = p 
 
@@ -368,7 +372,8 @@ def main ():
 
 		b.updateBrett(p[current].getMyNumber())
 
-		print(b.printBrett())
+		b.printBrett()
+		#print(b.printBrett())
 
 		b.update_scores()
 		print("Punkte:" , b.get_scores())
@@ -379,8 +384,16 @@ def main ():
 		game_on = ( p[last].lastStoneAccepted or p[current].lastStoneAccepted ) and (stones_set < maxNumberOfTurns)
 
 	print("game over")
-	b.updateBrett()
-	print("Punkte:" , b.get_scores())
+	# why should i update the brett once the game is over??
+	#b.updateBrett(p[last].getMyNumber())
+	scores_at_end = b. get_scores()
+	print("Punktestand am Ende:" , scores_at_end)
+	if scores_at_end[0] > scores_at_end[1] : 
+		print("Player 1 wins")
+	elif scores_at_end[0] < scores_at_end[1] : 
+		print("Player 2 wins")
+	else:
+		print("Both win.")	
 	# the host should announce the winner
 
 
