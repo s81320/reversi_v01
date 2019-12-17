@@ -25,29 +25,42 @@ class Player:
 			print("zu viele Player. Oder Turniermodus. Oder losen, wer gegen wen spielt. Oder queueing for playing :-)")
 		self.lastStoneAccepted = True
 
-	def put_stone(self):
+
+	def propose_stone(self):
 		"""asks a player to give two integers as coordinates where to put his/her stone.
 		returns a position as a tuple or the string 'quit' """
 		pos=[-1,-1]
 		print("Type of pos " , type(pos))
 		print("Du bist" , self.getMyNumber())
+		# get position from player - person
 		for i in range(2):
 			pos[i] = input(f"gib { i +1 } -te Koordinate der Position an: ")
-			print("whatever ...")
+			#print("whatever ...")
 			accept = False
-			while (not accept) and not (pos[i] == 'quit'):
+			while (not accept) and not (pos == 'quit'):
 				try:
 					int(pos[i])
 					accept = True
-					print("in try")
+					print("in try, prüfen auf int: accepted")
 				except ValueError:
 					pos[i] = input("gib eine Zahl (Integer) ein oder schreibe quit:")
+
+			# exit while with pos[i] either an interger input or the string 'quit'.
+
 			if pos[i] == 'quit':
 				print("exit input by typing quit. do something, interrupt whatever.")
-				pos='quit'
-			else:
-				pos = [int(pos[0]),int(pos[1])]
+				pos='quit'				
+		# end of for , both coordinates requested - or got input 'quit'
+
+		pos = [int(pos[0]), int(pos[1])]
+		print("return position" , pos)
 		return pos
+
+
+	def negotiate_stone_position(self):
+
+		while (not self.my_host.evaluate_stone(self.getMyNumber() , self.propose_stone() ) ):
+			print("in while")
 
 	def setColor(self, color):
 		self.color = color
@@ -58,11 +71,6 @@ class Player:
 
 	def setNumPlayers(self, numPlayers):
 		self.numPlayers = numPlayers
-
-	### used to be
-	# def setNumPlayers(numPlayers):
-	# setzt Klassenvariable, kein self im Argument! Mit self funktioniert es nicht.
-	# numPlayers = numPlayers
 
 	@classmethod
 	def set_max_number_of_players (class_ , a_number):
@@ -252,24 +260,15 @@ class Brett:
 		# at some point lies a stone of the same colour as the set stone 
 
 
-
-	def setStone(self, player , position):
-		myId = player.getMyNumber()
-		if self.checkStone(myId , position): 
-			self.brett[position] = myId
+	def setStone(self, playerID , position):
+		if self.checkStone(playerID , position): 
+			self.brett[position] = playerID
 			self.acceptedStone = position
-			player.lastStoneAccepted = True
+			#player.lastStoneAccepted = True
 			return True
 		else:
 			print("Stone rejected.")
 			return False
-
-	def startBrett(self):
-
-		self.setStone(1,(2,2))
-		self.setStone(1,(2,3))	
-		self.setStone(2,(3,2))
-		self.setStone(2,(3,3))	
 
 	def controlNewPosition(self, id, position):
 		pass
@@ -307,19 +306,20 @@ class Host:
 
 		return p	
 
-	def evaluate_stone(self , player , position): 
+	def evaluate_stone(self , playerID , position): 
 		"""Check stone and if OK set stone on board"""
 		print("Übergebene Parameter ***") 
 		print(list(self.my_board.brett.values()))
-		print(player.getMyNumber)
+		#print(player.getMyNumber)
 		print(position)
 		print("in host : evaluate stone")
-		if self.my_board.checkStone(player.getMyNumber(), tuple(position)) == True:
-			if self.my_board.setStone(player , tuple(position)):
-				player.lastStoneAccepted = True
-				return 1
+		if self.my_board.checkStone(playerID, tuple(position)) == True:
+			if self.my_board.setStone(playerID , tuple(position)):
+				self.my_player[playerID].lastStoneAccepted = True
+				return True
 		else:
-			return 0
+			return False
+
 
 	# def game_on(self):
 	# return whether the game should go on.
@@ -329,6 +329,7 @@ class Host:
 	@staticmethod
 	def next(i):
 		return ((1 + i)%2)
+
 def main ():
 
 	print("Starte das Spiel")
@@ -346,9 +347,6 @@ def main ():
 	b.update_scores()
 	print("Punkte:" , b.get_scores())
 
-	# for schleife muss werden zu:
-	# while continue mit Abbruchbedingung
-
 	game_on = True
 	stones_set = 4  # for stones initially set when setting up the board
 
@@ -359,21 +357,17 @@ def main ():
 
 	while game_on :
 		
-		number_of_rejects = 0 
-		#p[current].put_stone()
-		while (h.evaluate_stone(p[current] , p[current].put_stone()) == 0 ) and (number_of_rejects < 2) :
-			number_of_rejects += 1
+		p[current].negotiate_stone_position()
 
-		if number_of_rejects < 2:
-			stones_set += 1
-		else:
-			p[current].lastStoneAccepted = False
-			print("Failure to set a stone recorded")
+		# h.update_board()
+		# the host updates the board. Information: Who was the last player and where was the stone put (if any WAS put)
 
+		# in setStone the position of the last accepted stone is stored in Brett.acceptedStone
+		# the same way you coud store the currently active player ...
 		b.updateBrett(p[current].getMyNumber())
 
 		b.printBrett()
-		#print(b.printBrett())
+		# with the subscriber pattern in a network setting (client / server)  this should change
 
 		b.update_scores()
 		print("Punkte:" , b.get_scores())
@@ -384,8 +378,8 @@ def main ():
 		game_on = ( p[last].lastStoneAccepted or p[current].lastStoneAccepted ) and (stones_set < maxNumberOfTurns)
 
 	print("game over")
-	# why should i update the brett once the game is over??
-	#b.updateBrett(p[last].getMyNumber())
+	# should show a "game over" screen to each player
+
 	scores_at_end = b. get_scores()
 	print("Punktestand am Ende:" , scores_at_end)
 	if scores_at_end[0] > scores_at_end[1] : 
@@ -399,9 +393,6 @@ def main ():
 
 	# Funktioniert nicht, die Eingabe zu prüfen. 
 	# Eingabe 9,9 produziert Keyvalue Error und wird nicht abgefangen
-
-	# Fehlt noch: Prüfen auf zulässigkeit: 
-	# Steine des anderen Players müssen eingeschlossen werden
 
 if __name__== "__main__":
   main()
