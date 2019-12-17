@@ -1,3 +1,5 @@
+17.12.2019
+mediator pattern used when creating objects. Mediator pattern not yet used in communication.
 
 8.12.2019
 wrote first test for reversi
