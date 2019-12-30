@@ -1,5 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import csv
+
 #run with python or pythonw (for MacOS)
 
 
@@ -56,11 +58,17 @@ class Player:
 		print("return position" , pos)
 		return pos
 
-
 	def negotiate_stone_position(self):
+		count = 0
+		proposed_stone = self.propose_stone()
+		while (not self.my_host.evaluate_stone(self.getMyNumber() , proposed_stone ) and count < 2):
+			proposed_stone = self.propose_stone()
+			count += 1
+		if count == 2:
+			self.lastStoneAccepted = False
+		else:
+			self.lastStoneAccepted = True
 
-		while (not self.my_host.evaluate_stone(self.getMyNumber() , self.propose_stone() ) ):
-			print("in while")
 
 	def setColor(self, color):
 		self.color = color
@@ -88,7 +96,7 @@ class Player:
 class Brett:
 	"""Brett soll das Model(l) sein, die Daten des Spieles enthalten. Von der Klasse soll es nur ein Objekt geben (Singleton?)."""
 	# wenn es nur ein Objekt dieser Klasse gibt, wozu in Klassen- und Objektvariablen unterscheiden?
-	#size = 6 
+	# size = 6 
 	# brett is a dictionary with key a tupel of integers. 
 	# the value is 0 when empty, 1 when carrying a stone of player 1, 2 when carrying a stone of player 2
 	# values are accessed or set through brett[(1,2)]
@@ -173,31 +181,17 @@ class Brett:
 
 
 	def checkStone(self, id , position):
-		print("in Brett : check Stone")
-		# not catching the position outt of bounds, also zu groß
-		# return brett.checkPositionExists(position) & brett.checkPositionFree(position) & brett.checkEncloseOpponent( id , position)
-		if self.checkPositionExists(position):
-			if self.checkPositionFree(position):
-				if self.checkEncloseOpponent( id , position):
-					print("checkStone: OK")
-					return True
-		
-		return False
-
+		print("in Brett : check Stone")		
+#		code executes only until the first False
+		return (self.checkPositionExists(position) and self.checkPositionFree(position) and self.checkEncloseOpponent( id , position))
 
 	def checkPositionExists(self, position):
-		print("in Brett : check position exists")
-		if (( position[0] in range(self.size)) & (position[1] in range(self.size))):
-			return True
-		else:
-			return False	
+		print("in Brett : check position exists")		
+		return ( (position[0] in range(self.size)) and (position[1] in range(self.size)) )
 
 	def checkPositionFree(self, position):
 		print("in Brett : check position free")
-		try:
-			return self.brett[position] == -1
-		except KeyError:
-			return False
+		return self.brett[position] == -1
 
 	def getDirections(self, position): 
 		allDirections = [(1,0),(-1,0),(0,1),(0,-1),(-1,-1),(-1,1),(1,1),(1,-1)]
@@ -264,7 +258,6 @@ class Brett:
 		if self.checkStone(playerID , position): 
 			self.brett[position] = playerID
 			self.acceptedStone = position
-			#player.lastStoneAccepted = True
 			return True
 		else:
 			print("Stone rejected.")
@@ -278,6 +271,11 @@ class Host:
 	def __init__(self):
 		self.my_board : Board
 		self.my_player : list
+		self.my_logfile = './logs/log.csv'
+		with open(self.my_logfile, 'w', newline='') as logfile:
+			log_writer = csv.writer(logfile, delimiter=' ')
+			log_writer.writerow( ['created host'] )
+
 
 	def createBoard(self, size):
 		self.my_board = Brett(self, size)
@@ -285,10 +283,22 @@ class Host:
 
 	def setupBoard(self):
 		"""soll man nicht machen: direkt auf die Daten zugreifen. Besser: Methode benutzen!"""
-		self.my_board.brett[(1,1)] = 0
-		self.my_board.brett[(1,2)] = 0	
-		self.my_board.brett[(2,2)] = 1
-		self.my_board.brett[(2,1)] = 1		
+		# initial stones for player 0
+		stones_0 = [(  int(self.my_board.size/2)-1, int(self.my_board.size/2)-1 ) ,  ( int(self.my_board.size/2) -1 , int(self.my_board.size/2)  ) ]
+		self.my_board.brett[ stones_0[0] ] = 0
+		self.my_board.brett[ stones_0[1] ] = 0	
+		# initial stones fpr player 1
+		stones_1 = [ (int(self.my_board.size/2) , int(self.my_board.size/2) ) , ( int(self.my_board.size/2) , int(self.my_board.size/2) -1 ) ]
+		self.my_board.brett[stones_1[0] ] = 1
+		self.my_board.brett[ stones_1[1] ] = 1		
+
+		# write set stones to logfile
+		with open(self.my_logfile, 'a', newline='') as logfile:
+			log_writer = csv.writer(logfile, delimiter=' ')
+			log_writer.writerow( ['### stones set by host in setupBoard ###'] )
+			log_writer.writerow( ['for player, 0 , ' + str(stones_0) ] )
+			log_writer.writerow( ['for player, 1 , ' + str(stones_1) ] )
+
 	# this should return something??	
 
 	def invitePlayers(self):
@@ -307,18 +317,25 @@ class Host:
 		return p	
 
 	def evaluate_stone(self , playerID , position): 
-		"""Check stone and if OK set stone on board"""
-		print("Übergebene Parameter ***") 
-		print(list(self.my_board.brett.values()))
-		#print(player.getMyNumber)
-		print(position)
-		print("in host : evaluate stone")
-		if self.my_board.checkStone(playerID, tuple(position)) == True:
-			if self.my_board.setStone(playerID , tuple(position)):
-				self.my_player[playerID].lastStoneAccepted = True
-				return True
+		"""Check stone and set it , return True or False"""
+
+#		longer code
+#		if self.my_board.checkStone(playerID, tuple(position)):
+#			if self.my_board.setStone(playerID , tuple(position)):
+#				self.my_player[playerID].lastStoneAccepted = True
+#				return True
+#		else:
+#			return False
+
+		if self.my_board.setStone(playerID , tuple(position)): 
+			with open(self.my_logfile, 'a', newline='') as logfile:
+				log_writer = csv.writer(logfile, delimiter=' ')
+				log_writer.writerow( ['as player ,' + str(self.my_player[playerID].getMyNumber()) + ',' + str(position)] )
+			return True
 		else:
 			return False
+#		self.my_player[playerID].lastStoneAccepted = (self.my_board.checkStone(playerID, tuple(position))  and self.my_board.setStone(playerID , tuple(position)) )	
+#		return self.my_player[playerID].lastStoneAccepted
 
 
 	# def game_on(self):
@@ -326,9 +343,9 @@ class Host:
 	# is the next player allowed to continue ??
 	# return True or False
 
-	@staticmethod
-	def next(i):
-		return ((1 + i)%2)
+	
+def next(i):
+	return ((1 + i)%2)
 
 def main ():
 
@@ -364,16 +381,20 @@ def main ():
 
 		# in setStone the position of the last accepted stone is stored in Brett.acceptedStone
 		# the same way you coud store the currently active player ...
-		b.updateBrett(p[current].getMyNumber())
+		
+		if p[current].lastStoneAccepted == True:
 
-		b.printBrett()
-		# with the subscriber pattern in a network setting (client / server)  this should change
+			b.updateBrett(p[current].getMyNumber())
 
-		b.update_scores()
-		print("Punkte:" , b.get_scores())
+			b.printBrett()
+		# with the subscriber pattern in a network setting (client / server)  this should change:
+		# as the host updates the board the board publishes its new state
+
+			b.update_scores()
+			print("Punkte:" , b.get_scores())
 
 		last = current 
-		current = h.next(current)
+		current = next(current)
 
 		game_on = ( p[last].lastStoneAccepted or p[current].lastStoneAccepted ) and (stones_set < maxNumberOfTurns)
 
