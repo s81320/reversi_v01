@@ -21,3 +21,5 @@ use my_board in class Host in method evaluate stone
 line 360 method is called
 
 removing player and using self.my_player is more difficult? need to know which player...reduced sintroduced a log, written by the hst, to document all set stones.
+reduced sintroduced a log, written by the hst, to document all set stones.
+30.12.2019
