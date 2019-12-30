@@ -1,3 +1,4 @@
 done
+introduced a log (writing all the set stones to a csv file), handled by the host
 used mediator pattern
 set up a github repository for reversi
