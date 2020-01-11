@@ -1,4 +1,4 @@
-# run test in cli or 
+# run test in cli or through sonarqube
 
 import unittest
 import take06 as reversi
