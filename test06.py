@@ -1,40 +1,25 @@
-# run test in cli or through sonarqube
+from unittest import TestCase
+from unittest.mock import patch, Mock
 
-import unittest
 import take06 as reversi
 
-class TestObjectCreation(unittest.TestCase):
+class TestObjectCreation(TestCase):
 
 	def setUp(self):
 		pass
 
 	def tearDown(self):
-		pass	
-
-	def test_creation_host(self):
-		h = reversi.Board(4)
-		self.assertEqual(h.maxNumberStones,16)
-		self.assertIsInstance(h.brett,dict)
-		self.assertEqual(len(h.brett), h.maxNumberStones)
-
-		h = reversi.Board(5)
-		self.assertEqual(h.maxNumberStones,25)
-		self.assertIsInstance(h.brett,dict)
-		self.assertEqual(len(h.brett), h.maxNumberStones)
-
-		h = reversi.Board(10)
-		self.assertEqual(h.maxNumberStones,100)
-		self.assertIsInstance(h.brett,dict)
-		self.assertEqual(len(h.brett), h.maxNumberStones)
+		pass		
 
 	def test_creation_board(self):
+		mock_host = Mock(spec=reversi.Host)
+		b = reversi.Board(mock_host, 4)
+		self.assertEqual(b.maxNumberStones,16)
+		self.assertIsInstance(b.brett,dict)
+		self.assertEqual(len(b.brett), b.maxNumberStones)
+
+	def test_creation_host(self):
 		pass
 
 	def test_creation_player(self):
 		pass	
-
-	
-
-
-if __name__ == '__main__':
-    unittest.main()
