@@ -93,7 +93,7 @@ class Player:
 		return int((1 + self.number)%2)
 
 
-class Brett:
+class Board:
 	def __init__(self, host, size: int):
 		"""init."""
 		self.my_host=host
@@ -271,7 +271,7 @@ class Host:
 
 	def create_board(self, size):
 		"""The host creates the board. For size n there will be n*n possible positions for the stones to set."""
-		self.my_board=Brett(self, size)
+		self.my_board=Board(self, size)
 		return self.my_board
 
 	def setup_board(self):

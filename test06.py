@@ -12,17 +12,17 @@ class TestObjectCreation(unittest.TestCase):
 		pass	
 
 	def test_creation_host(self):
-		h = reversi.Brett(4)
+		h = reversi.Board(4)
 		self.assertEqual(h.maxNumberStones,16)
 		self.assertIsInstance(h.brett,dict)
 		self.assertEqual(len(h.brett), h.maxNumberStones)
 
-		h = reversi.Brett(5)
+		h = reversi.Board(5)
 		self.assertEqual(h.maxNumberStones,25)
 		self.assertIsInstance(h.brett,dict)
 		self.assertEqual(len(h.brett), h.maxNumberStones)
 
-		h = reversi.Brett(10)
+		h = reversi.Board(10)
 		self.assertEqual(h.maxNumberStones,100)
 		self.assertIsInstance(h.brett,dict)
 		self.assertEqual(len(h.brett), h.maxNumberStones)
@@ -32,6 +32,8 @@ class TestObjectCreation(unittest.TestCase):
 
 	def test_creation_player(self):
 		pass	
+
+	
 
 
 if __name__ == '__main__':
