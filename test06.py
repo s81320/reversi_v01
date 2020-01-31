@@ -15,8 +15,8 @@ class TestObjectCreation(TestCase):
 		mock_host = Mock(spec=reversi.Host)
 		b = reversi.Board(mock_host, 4)
 		self.assertEqual(b.maxNumberStones,16)
-		self.assertIsInstance(b.brett,dict)
-		self.assertEqual(len(b.brett), b.maxNumberStones)
+		self.assertIsInstance(b.board,dict)
+		self.assertEqual(len(b.board), b.maxNumberStones)
 
 	def test_creation_host(self):
 		pass
