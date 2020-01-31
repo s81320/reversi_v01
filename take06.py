@@ -73,7 +73,7 @@ class Player:
 
 	def get_number_of_players(self):
 		"""Returns the class-attribute number of players."""
-		return numPlayers
+		return Player.numPlayers
 
 	def set_number_of_players(self, numPlayers):
 		"Simple setter. Trust the name."
