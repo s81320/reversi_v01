@@ -1,3 +1,5 @@
+# run as pytest test06.py
+
 from unittest import TestCase
 from unittest.mock import patch, Mock
 
@@ -13,10 +15,10 @@ class TestObjectCreation(TestCase):
 
 	def test_creation_board(self):
 		mock_host = Mock(spec=reversi.Host)
-		b = reversi.Board(mock_host, 4)
-		self.assertEqual(b.maxNumberStones,16)
+		b = reversi.Board(mock_host)
+		self.assertEqual(b.max_number_stones,64)
 		self.assertIsInstance(b.board,dict)
-		self.assertEqual(len(b.board), b.maxNumberStones)
+		self.assertEqual(len(b.board), b.max_number_stones)
 
 	def test_creation_host(self):
 		pass
