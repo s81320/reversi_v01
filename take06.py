@@ -1,385 +1,326 @@
+# 10.2.2020
+"""Should I have a docstring for the whole file?"""
 # import numpy as np # this library is not used
 import matplotlib.pyplot as plt
-import csv
 
 #run with python or pythonw (for MacOS)
 
 
-# __all__ = ['Host', 'Player', 'Board']
+# __all__  =  ['Host', 'Player', 'Board']
 
 class Player:
-	# class variables, shared by all instances of this class
-	numPlayers=0 
-	maxNumPlayers:int  
+    """The player class. What can I say??"""
+    # class variables, shared by all instances of this class
+    num_players_created = 0
+    max_num_players = 2
 
 
-	# class variable maxNumPlayers has to be set before calling __init__
-	def __init__(self, host):
-		"""initialize."""
-		self.my_host = host
-		print("anzahl gewünschte Spieler: ",self.maxNumPlayers)
-		# variables local to each created object
-		self.number=Player.numPlayers 
-		self.highScore=0
-		Player.numPlayers=Player.numPlayers+1
-		if self.number == Player.maxNumPlayers-1:
-			print("genügend Player vorhanden.")
-		if self.number > Player.maxNumPlayers-1:
-			print("zu viele Player. Oder Turniermodus. Oder losen, wer gegen wen spielt. Oder queueing for playing :-)")
-		self.last_stone_accepted=True
+    # class variable max_num_players has to be set before calling __init__
+    def __init__(self, host):
+        """initialize. Set the number. increase the number of created players."""
+        # print("create Player")
+        self.my_host = host
+        self.number = Player.num_players_created
+        self.last_stone_accepted = True
+        Player.num_players_created = Player.num_players_created+1
+
+    def propose_stone(self):
+        """asks a player to give two integers as coordinates where to put his/her stone.
+        returns a position as a tuple. No error handling."""
+        pos = [-1, -1]
+        #print("Type of pos " , type(pos))
+        # here I used states and assignments
+        #if self.get_my_number() == 0:
+        #   col  =  'red'
+        #else:
+        #   col  =  'blue'
+        #print("Set a " + col + " stone!")
+        # this is now stateless. And it avoids an if else clause.
+        colours = ['red', 'blue']
+        print("Set a "+colours[self.get_my_number()]+" stone.")
+        # get position from player - person
+        for i in range(2):
+            pos[i] = input(f"Input coordinate { i +1 } for your chosen position. Input an integer, range 0 to 7: ")
+        return [int(pos[0]), int(pos[1])]
 
 
-	def propose_stone(self):
-		"""asks a player to give two integers as coordinates where to put his/her stone.
-		returns a position as a tuple or the string 'quit' """
-		pos=[-1,-1]
-		print("Type of pos " , type(pos))
-		print("Du bist" , self.get_my_number())
-		# get position from player - person
-		for i in range(2):
-			pos[i]=input(f"gib { i +1 } -te Koordinate der Position an: ")
-			#print("whatever ...")
-			accept=False
-			while (not accept) and not (pos == 'quit'):
-				try:
-					int(pos[i])
-					accept=True
-					print("in try, prüfen auf int: accepted")
-				except ValueError:
-					pos[i]=input("gib eine Zahl (Integer) ein oder schreibe quit:")
+    def negotiate_stone(self):
+        """A player-object gets a keyboard-input from the player-human. If not successful (out of bounds, not free), no stone is set and the game continues (with the next player)."""
+        proposed_stone = self.propose_stone()
+        self.last_stone_accepted = self.my_host.evaluate_stone(self.get_my_number(), proposed_stone)
 
-			# exit while with pos[i] either an interger input or the string 'quit'.
+    @classmethod
+    def get_number_of_players(cls):
+        """Returns the class-attribute number of players."""
+        #return Player.num_players
+        return cls.num_players_created
 
-			if pos[i]=='quit':
-				print("exit input by typing quit. do something, interrupt whatever.")
-				pos='quit'
-		# end of for , both coordinates requested - or got input 'quit'
+#   @classmethod
+#   def set_max_number_of_players(class_, a_number):
+#       """Simple setter. Does what the name suggests."""
+#       class_.max_num_players = a_number
 
-		pos=[int(pos[0]), int(pos[1])]
-		print("return position", pos)
-		return pos
+    def get_my_number(self):
+        """returns the ID - number of a player."""
+        return int(self.number)
 
-	def negotiate_stone_position(self):
-		"""A player-object gets a keyboard-input from the player-human. S/he can try three times. If not successful after the third input, no stone is set and the game continues (with the next player)."""
-		count=0
-		proposed_stone=self.propose_stone()
-		while (not self.my_host.evaluate_stone(self.get_my_number(), proposed_stone) and count < 2):
-			proposed_stone=self.propose_stone()
-			count+=1
-		if count == 2:
-			self.last_stone_accepted=False
-		else:
-			self.last_stone_accepted=True
-
-	def get_number_of_players(self):
-		"""Returns the class-attribute number of players."""
-		return Player.numPlayers
-
-	def set_number_of_players(self, numPlayers):
-		"Simple setter. Trust the name."
-		self.numPlayers=numPlayers
-
-	@classmethod
-	def set_max_number_of_players(class_, a_number):
-		"""Simple setter. Does what the name suggests."""
-		class_.maxNumPlayers=a_number
-
-	def get_my_number(self):
-		"""returns the ID - number of a player."""
-		return int(self.number)
-
-	def get_other_player_number(self):
-		"""works for 2 players only"""
-		return int((1 + self.number)%2)
-
+    def get_other_player_number(self):
+        """works for 2 players only"""
+        return int((1+self.number)%2)
 
 class Board:
-	def __init__(self, host, size: int):
-		"""init."""
-		self.my_host=host
-		self.size=size
-		self.board={(k,l):-1 for k in range(self.size) for l in range(self.size)}
-		self.score=[] # empty list 
-		self.acceptedStone=(-1,-1)
-		self.maxNumberStones=self.size*self.size
-		self.stones_set=0
+    """Documenting the Board class."""
+    def __init__(self, host):
+        """init."""
+        self.my_host = host
+        self.size = 8
+        self.max_number_stones = 64
+        self.board = {(k, l):-1 for k in range(self.size) for l in range(self.size)}
+        self.score = [] # empty list
+        self.accepted_stone = (-1, -1)
+        self.stones_set = 0
 
-	def update_scores(self):
-		"""To be called after a new stone has been set. Calculates from scratch."""
-		self.score=[0,0]
-		
-		b=list(self.board.values())
-		for i in range(2):
-			self.score[i]=sum( 1 for j in range(len(b)) if b[j]==i)
+    def update_scores(self):
+        """To be called after a new stone has been set. Calculates from scratch."""
+        self.score = [0, 0]
+        stones_on_board = list(self.board.values())
+        for i in range(2):
+            self.score[i] = sum(1 for j in range(len(stones_on_board)) if stones_on_board[j] == i)
 
-	def get_scores(self):
-		"""simple getter function. Returns the score of both (possibly more, later ...) players."""
-		return self.score
+    def get_scores(self):
+        """simple getter function. Returns the score of both (possibly more, later ...) players."""
+        return self.score
 
-	def update_board(self, id):
-		"""When a player has put a new stone on the board newly includes / cought stones turn change color"""
-		newStone=self.acceptedStone
-		directions=self.get_directions(newStone)
+    def update_board(self, player_id):
+        """When a player has put a new stone on the board newly includes / cought stones turn change color"""
+        new_stone = self.accepted_stone
+        directions = self.get_directions(new_stone)
 
-		dir_touch_opponent=[]
+        dir_touch_opponent = []
 
-		for direction in directions:
-			if self.board[ tuple( x + y for x,y in zip( newStone, direction) ) ]==(1 + id)%2:
-				dir_touch_opponent.append(direction)
-		print("dir touch opponent ", dir_touch_opponent)
+        for direction in directions:
+            if self.board[tuple(x+y for x, y in zip(new_stone, direction))] == (1+player_id)%2:
+                dir_touch_opponent.append(direction)
+        print("dir touch opponent ", dir_touch_opponent)
 
-		dir_enclose_opponent = []
+        dir_enclose_opponent = []
 
-		for direction in dir_touch_opponent:
-			pos = newStone
-			print("initial position ", pos)
-			enclose=False
-			dicided=False
-			while not dicided:
-				try:
-					nextField=self.board[ tuple( x + y for x,y in zip(pos , direction) ) ] 
-				except KeyError:
-					dicided=True
+        for direction in dir_touch_opponent:
+            pos = new_stone
+            #print("initial position ", pos)
+            dicided = False
+            while not dicided:
+                try:
+                    next_field = self.board[tuple(x+y for x, y in zip(pos, direction))]
+                except KeyError:
+                    dicided = True
 
-				if nextField==(1 + id)%2:
-					pos = tuple( x+y for x,y in zip(pos , direction) )
-					print("new position " , pos)
-				elif nextField==id:
-					dir_enclose_opponent.append(direction)
-					enclose=True
-					dicided=True 
-				else:
-					dicided=True
-	
-		for direction in dir_enclose_opponent:
-			pos=newStone 
-			done=False
-			while not done:
-				nextStoneInLine = tuple( x+y for x,y in zip(pos , direction) )
-				if self.board[nextStoneInLine]==(1 + id)%2: 
-					self.board[nextStoneInLine]=id
-					pos=nextStoneInLine
-				else:
-					done=True
+                if next_field == (1+player_id)%2:
+                    pos = tuple(x+y for x, y in zip(pos, direction))
+                    #print("new position " , pos)
+                elif next_field == player_id:
+                    dir_enclose_opponent.append(direction)
+                    dicided = True
+                else:
+                    dicided = True
 
-	def print_board(self):
-		"""Outputs the board as a graph."""
-		# it would be nice just to add one point innstead of printing all again from scratch
-		k,v = zip(*self.board.items())
-		a = [k for k,v in self.board.items() if v==0]
-		b = [k for k,v in self.board.items() if v==1]
-		plt.plot([0,self.size-1,0,self.size-1],[0,0,self.size-1,self.size-1], marker= 'x', ls='')
-		plt.plot(*zip(*a), marker='o', color='r', ls='')
-		plt.plot(*zip(*b), marker='o', color='b', ls='')
+        for direction in dir_enclose_opponent:
+            pos = new_stone
+            done = False
+            while not done:
+                next_stone_in_line = tuple(x+y for x, y in zip(pos, direction))
+                if self.board[next_stone_in_line] == (1+player_id)%2:
+                    self.board[next_stone_in_line] = player_id
+                    pos = next_stone_in_line
+                else:
+                    done = True
 
-		plt.draw()
-		plt.show(block=False)
+    def print_board(self):
+        """Outputs the board as a graph."""
+        # it would be nice just to add one point instead of printing all again from scratch
+        stones_player_0 = [k for k, v in self.board.items() if v == 0]
+        stones_player_1 = [k for k, v in self.board.items() if v == 1]
+        plt.plot([0, self.size-1, 0, self.size-1], [0, 0, self.size-1, self.size-1], marker='x', ls='')
+        plt.plot(*zip(*stones_player_0), marker='o', color='r', ls='')
+        plt.plot(*zip(*stones_player_1), marker='o', color='b', ls='')
+
+        plt.draw()
+        plt.show(block=False)
 
 
-	def check_stone(self, id, position):
-		"""Calls three other check-functions."""
-		print("in Brett : check Stone")		
-#		code executes only until the first False
-		return (self.check_position_exists(position) and self.check_position_free(position) and self.check_enclose_opponent( id , position))
+    def check_stone(self, player_id, position):
+        """Calls three other check-functions."""
+        #print("in Brett : check Stone")
+        #code executes only until the first False
+        return self.check_position_exists(position) and self.check_position_free(position) and self.check_enclose_opponent(player_id, position)
 
-	def check_position_exists(self, position):
-		"""Returns True iff (position) is on the board."""
-		print("in Brett : check position exists")		
-		return ((position[0] in range(self.size)) and (position[1] in range(self.size)))
+    def check_position_exists(self, position):
+        """Returns True iff (position) is on the board."""
+        #print("in Brett : check position exists")
+        return (position[0] in range(self.size)) and (position[1] in range(self.size))
 
-	def check_position_free(self, position):
-		"""Check if a (position) is free. Returns True iff no stone is already placed on that position."""
-		print("in Brett : check position free")
-		return self.board[position]==-1
+    def check_position_free(self, position):
+        """Check if a (position) is free. Returns True iff no stone is already placed on that position."""
+        #print("in Brett : check position free")
+        return self.board[position] == -1
 
-	def get_directions(self, position): 
-		"""Given a (position) this function returns all other positions that are adjacent to this position and on the board."""
-		allDirections = [(1,0),(-1,0),(0,1),(0,-1),(-1,-1),(-1,1),(1,1),(1,-1)]
-		
-		d2 = [[ x+y for x,y in zip(position , direction) if x+y in range(self.size) ] for direction in allDirections ]
-		# for a position and direction: if the go beyond the board it maybe only one coordinate is affected
-		# first only this coordinate is removed. Resulting in tupels of length 0 or 1.
-		# these shorter tupels are then removed
-		mask = [len(d)==2 for d in d2]
-		# Problem with masking: arrays can be masked, lists cannot
+    def get_directions(self, position):
+        """Given a (position) this function returns all other positions that are adjacent to this position and on the board."""
+        all_directions = [(1, 0), (-1, 0), (0, 1), (0, -1), (-1, -1), (-1, 1), (1, 1), (1, -1)]
+        dont_remember_what_it_is = [[x+y for x, y in zip(position, direction) if x+y in range(self.size)] for direction in all_directions]
+        mask = [len(d) == 2 for d in dont_remember_what_it_is]
+        return [all_directions[i] for i in range(8) if mask[i]]
 
-		validDirections = [allDirections[i] for i in range(8) if mask[i]==True]
-		# print("directions d2: " , directions)
+    def check_enclose_opponent(self, player_id, position):
+        """For a player (player_id) to set a stone at a specified (position), this has to create an enclosing of the opponents' stones."""
+        print("in Brett : check enclose opponent")
+        directions = self.get_directions(position)
+        dir_touch_opponent = []
+        for direction in directions:
+            if self.board[tuple(x+y for x, y in zip(position, direction))] == (1+player_id)%2:
+                dir_touch_opponent.append(direction)
+        print("dir touch opponent ", dir_touch_opponent)
 
-		return validDirections
+        # this is a break statement - function can be exited at this point
+        if len(dir_touch_opponent) == 0:
+            return False
 
+        print("is this ever reached? pylint thinks it's not.")
+        dir_enclose_opponent = []
+        for direction in dir_touch_opponent:
+            pos = position
+            #print("initial position ", pos)
+            dicided = False
+            while not dicided:
+                try:
+                    next_field = self.board[tuple(x+y for x, y in zip(pos, direction))]
+                except KeyError:
+                    dicided = True
 
-	def check_enclose_opponent(self , id , position):
-		"""For a player (id) to set a stone at a specified (position), this has to create an enclosing of the opponent's stones."""
-		print("in Brett : check enclose opponent")
-		directions = self.get_directions(position)
-		dir_touch_opponent = []
-		for direction in directions:
-			if self.board[ tuple( x+y for x,y in zip(position , direction) ) ]==(1+id)%2:
-				dir_touch_opponent.append(direction)
-		print("dir touch opponent ", dir_touch_opponent)
+                if next_field == (1+player_id)%2:
+                    pos = tuple(x+y for x, y in zip(pos, direction))
+                    #print("new position ", pos)
+                elif next_field == player_id:
+                    return True
+                else:
+                    dicided = True
+        return False
 
-		if len(dir_touch_opponent)==0:
-			return False
+        # check that the set stone is adjacent to a stone of the opponent
+        # check that there exists a direction such that in that direction
+        # at some point lies a stone of the same colour as the set stone
 
-		dir_enclose_opponent=[]
-		for direction in dir_touch_opponent:
-			pos=position 
-			print("initial position ", pos)
-			enclose=False
-			dicided=False
-			while not dicided:
-				try:
-					nextField = self.board[ tuple( x+y for x,y in zip(pos, direction) ) ] 
-				except KeyError:
-					dicided=True
+    def set_stone(self, player_id, position):
+        """A stone is set on the board. Input: who (player_id_) sets the stone where (position)."""
+        if self.check_stone(player_id, position):
+            self.board[position] = player_id
+            self.accepted_stone = position
+            self.stones_set += 1
+            return True
+        else:
+            print("Stone rejected.")
+            return False
 
-				if nextField==(1+id)%2:
-					pos=tuple( x+y for x,y in zip(pos, direction))
-					print("new position ", pos)
-				elif nextField==id:
-					return True
-				else:
-					dicided=True
-		return False
-
-		# check that the set stone is adjacent to a stone of the opponent
-		# check that there exists a direction such that in that direction 
-		# at some point lies a stone of the same colour as the set stone 
-
-
-	def set_stone(self, playerID, position):
-		"""A stone is set on the board. Input: who (playerID) sets the stone where (position)."""
-		if self.check_stone(playerID, position): 
-			self.board[position]=playerID
-			self.acceptedStone=position
-			return True
-		else:
-			print("Stone rejected.")
-			return False
-		
 class Host:
+    """The Host controlls the game. players communicate with the host, and s/he interacts with the board."""
+    def __init__(self):
+        """The host will have a board and players, to be created later. The host has a log file."""
+        self.my_board: Board
+        self.my_player: list
 
-	def __init__(self):
-		"""The host will have a board and players, to be created later. The host has a log file."""
-		self.my_board:Board
-		self.my_player:list
-		self.my_logfile='./logs/log.csv'
-		with open(self.my_logfile, 'w', newline='') as logfile:
-			log_writer=csv.writer(logfile, delimiter=' ')
-			log_writer.writerow( ['created host'] )
+    def create_board(self):
+        """The host creates the board. For size n there will be n*n possible positions for the stones to set."""
+        self.my_board = Board(self)
+        return self.my_board
 
-	def create_board(self, size):
-		"""The host creates the board. For size n there will be n*n possible positions for the stones to set."""
-		self.my_board=Board(self, size)
-		return self.my_board
+    def setup_board(self):
+        """soll man nicht machen: direkt auf die Daten zugreifen. Besser: Methode benutzen!"""
+        # initial stones for player 0
+        stones_0 = [(int(self.my_board.size/2)-1, int(self.my_board.size/2)-1), (int(self.my_board.size/2)-1, int(self.my_board.size/2))]
+        self.my_board.board[stones_0[0]] = 0
+        self.my_board.board[stones_0[1]] = 0
+        # initial stones fpr player 1
+        stones_1 = [(int(self.my_board.size/2), int(self.my_board.size/2)), (int(self.my_board.size/2), int(self.my_board.size/2)-1)]
+        self.my_board.board[stones_1[0]] = 1
+        self.my_board.board[stones_1[1]] = 1
 
-	def setup_board(self):
-		"""soll man nicht machen: direkt auf die Daten zugreifen. Besser: Methode benutzen!"""
-		# initial stones for player 0
-		stones_0=[( int(self.my_board.size/2)-1, int(self.my_board.size/2)-1), (int(self.my_board.size/2)-1, int(self.my_board.size/2))]
-		self.my_board.board[stones_0[0]]=0
-		self.my_board.board[stones_0[1]]=0	
-		# initial stones fpr player 1
-		stones_1=[(int(self.my_board.size/2) , int(self.my_board.size/2)), (int(self.my_board.size/2), int(self.my_board.size/2)-1)]
-		self.my_board.board[stones_1[0]]=1
-		self.my_board.board[stones_1[1]]=1		
+        self.my_board.stones_set = 4
 
-		self.my_board.stones_set=4
+    def create_2_players(self):
+        """The host creates 2 players."""
+        return [Player(self), Player(self)]
 
-		# write set stones to logfile
-		with open(self.my_logfile, 'a', newline='') as logfile:
-			log_writer=csv.writer(logfile, delimiter=' ')
-			log_writer.writerow(['### stones set by host in setup_board ###'])
-			log_writer.writerow(['for player, 0 , '+str(stones_0)])
-			log_writer.writerow(['for player, 1 , '+str(stones_1)])
+    def evaluate_stone(self, player_id, position):
+        """Check stone and set it , return True or False"""
+        return self.my_board.set_stone(player_id, tuple(position))
+        # avoid if then else statements
+        #if self.my_board.set_stone(player_id, tuple(position)):
+        #   return True
+        #else:
+        #   return False
 
-	def create_players(self,some_number):
-		"""The host creates the right amount of players. In this version there are always 2 players created."""
-		# set class variable first
-		Player.set_max_number_of_players(some_number)
+def next_player(i):
+    """get the id for the next player"""
+    return (1+i)%2
 
-		player_list=[]
-		for _ in range(some_number):
-			player_list.append(Player(self))
+def main():
+    """D docstring for the main function."""
+    print("***********************")
+    print("*** Game starts now ***")
+    print("***********************")
+    print("*** Rules *************")
+    print("***********************")
+    print("*** Red and blue take turns in setting stones on the board. Players input positions where they want to set a stone of their colour.")
+    print("*** A stone can only be set adjacent to a stone of the opponent and has to enclose stones of the opponent. Allenclosed stones will change colour and become the colour of the stone just set.")
+    print("*** If a player sets a stone incorrectly, no stone is set. It is then the opponents turn to set a stone.")
+    print("*** The game ends when the board is full or whenever the red player puts a stone incorrectly and the blue player immediately afterwards, too.")
+    print("*** Game is interrupted at input ctrl+C followed by enter.")
 
-		self.my_player=player_list 
+    host = Host()
+    board = host.create_board()
+    host.setup_board()
+    player = host.create_2_players()
+    board.print_board()
+    board.update_scores()
+    print("Scores:", board.get_scores())
 
-		return player_list	
+    game_on = True
+    current = 0
+    last = 0
+    max_number_of_turns = board.max_number_stones # define getter for max_number_of_stones
+    # better: move it all into Host or Board !!
 
-	def evaluate_stone(self , playerID , position): 
-		"""Check stone and set it , return True or False"""
-		if self.my_board.set_stone(playerID, tuple(position)): 
-			with open(self.my_logfile, 'a', newline='') as logfile:
-				log_writer=csv.writer(logfile, delimiter=' ')
-				log_writer.writerow( ['as player ,' + str(self.my_player[playerID].get_my_number()) + ',' + str(position)] )
-			self.my_board.stones_set+=1
-			return True
-		else:
-			return False
-	
-def next(i):
-	"""get the id for the next player"""
-	return ((1 + i)%2)
+    while game_on:
+        player[current].negotiate_stone()
+        if player[current].last_stone_accepted:
+            board.update_board(player[current].get_my_number())
+            board.print_board()
+            board.update_scores()
+            print("Punkte:", board.get_scores())
 
-def main ():
+        last = current
+        current = next_player(current)
 
-	print("Starte das Spiel")
+        print("end of round. Next round?")
+        print("last_stone_accepted ", player[0].last_stone_accepted, player[1].last_stone_accepted)
+        print("all stones set? ", board.stones_set, " < ", max_number_of_turns, "?")
+        game_on = ((player[last].last_stone_accepted or player[current].last_stone_accepted) and (board.stones_set < max_number_of_turns))
+    print("*****************")
+    print("*** game over ***")
+    print("*****************")
 
-	host=Host()
+    scores_at_end = board.get_scores()
+    print("Scores for red and blue:", scores_at_end)
+    if scores_at_end[0] > scores_at_end[1]:
+        print("************************")
+        print("*** red Player wins *** ")
+        print("************************")
+    elif scores_at_end[0] < scores_at_end[1]:
+        print("************************")
+        print("*** blue Player wins ***")
+        print("************************")
+    else:
+        print("Both win.")
 
-	board=host.create_board(4)
-
-	host.setup_board()
-
-	player=host.create_players(2)
-
-	print(board.print_board())
-
-	board.update_scores()
-	print("Punkte:" , board.get_scores())
-
-	game_on=True
-
-	current=0
-	last = 0
-	max_number_of_turns=board.maxNumberStones # define getter for max_number_of_stones 
-	# better: move it all into Host or Board !!
-
-	while game_on:
-		
-		player[current].negotiate_stone_position()
-
-		if player[current].last_stone_accepted:
-			board.update_board(player[current].get_my_number())
-			board.print_board()
-			board.update_scores()
-			print("Punkte:", board.get_scores())
-
-		last=current
-		current=next(current)
-
-		print("end of round. Next round?")	
-		print("last_stone_accepted ", player[last].last_stone_accepted, player[current].last_stone_accepted)
-		print("all stones set? " , board.stones_set , "< " , max_number_of_turns, "?")
-		game_on=((player[last].last_stone_accepted or player[current].last_stone_accepted) and (board.stones_set<max_number_of_turns))
-
-	print("game over")
-	# should show a "game over" screen to each player
-
-	scores_at_end=board.get_scores()
-	print("Punktestand am Ende:", scores_at_end)
-	if scores_at_end[0]>scores_at_end[1]: 
-		print("Player 1 wins")
-	elif scores_at_end[0]<scores_at_end[1]: 
-		print("Player 2 wins")
-	else:
-		print("Both win.")	
-	# the host should announce the winner
-
-
-	# Funktioniert nicht, die Eingabe zu prüfen. 
-	# Eingabe 9,9 produziert Keyvalue Error und wird nicht abgefangen
-
-if __name__== "__main__":
-  main()
+if __name__ == "__main__":
+    main()
