@@ -10,6 +10,10 @@
 automated build with github action
 ![Python application](https://github.com/s81320/reversi/workflows/Python%20application/badge.svg)
 gradle
+generate docs, call tests
 ## 5 unit tests
 ## 6 continuous delivery
-circle ci , travis ci
+show pipepines in circle ci , travis ci
+## 7 ide
+## 8 DSL demo example snipplet
+## 9 functional programming
