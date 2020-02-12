@@ -16,17 +16,19 @@ I worked with pylint to get hints for how to improve the code. I had quite a lot
 
 ## 3 clean code
 
-see my Wiki [wiki of reversi](./wiki/clean-code)
-
+see my [wiki of reversi](https://github.com/s81320/reversi/wiki/clean-code)
 
 ## 4 build management
 automated build with github action
 ![Python application](https://github.com/s81320/reversi/workflows/Python%20application/badge.svg)
 
-to do: gradle, generate docs, call tests
+This build includes testing and documentation as html documents.
+
 ## 5 unit tests
 ## 6 continuous delivery
 show pipepines in circle ci , travis ci
 ## 7 ide
 ## 8 DSL demo example snipplet
 ## 9 functional programming
+
+see my [wiki of reversi](https://github.com/s81320/reversi/wiki/functional-programming)
