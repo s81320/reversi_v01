@@ -31,4 +31,4 @@ jobs:
         pytest test06.py
     - name: Create documentation with pydoc
       run: |
-        pydoc -w test06
+        pydoc -w take06
