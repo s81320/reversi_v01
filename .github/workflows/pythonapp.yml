@@ -32,3 +32,8 @@ jobs:
     - name: Create documentation with pydoc
       run: |
         pydoc -w take06
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: my-artifact
+        path: take06.html
