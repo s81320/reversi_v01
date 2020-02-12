@@ -1,11 +1,11 @@
 # run as pytest test06.py
 
-from unittest import TestCase
+import unittest
 from unittest.mock import patch, Mock
 
 import take06 as reversi
 
-class TestObjectCreation(TestCase):
+class TestObjectCreation(unittest.TestCase):
 
 	def setUp(self):
 		pass
@@ -20,7 +20,7 @@ class TestObjectCreation(TestCase):
 		self.assertIsInstance(b.board,dict)
 		self.assertEqual(len(b.board), b.max_number_stones)
 
-class TestBoardFunctions(TestCase):
+class TestBoardFunctions(unittest.TestCase):
 
 	def test_check_position_exists(self):
 		mock_host = Mock(spec=reversi.Host)
