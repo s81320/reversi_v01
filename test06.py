@@ -1,7 +1,7 @@
 # run as pytest test06.py
 
 import unittest
-from unittest.mock import patch, Mock
+from unittest.mock import Mock
 
 import take06 as reversi
 
@@ -11,7 +11,7 @@ class TestObjectCreation(unittest.TestCase):
 		pass
 
 	def tearDown(self):
-		pass		
+		pass
 
 	def test_creation_board(self):
 		mock_host = Mock(spec=reversi.Host)
@@ -25,17 +25,17 @@ class TestBoardFunctions(unittest.TestCase):
 	def test_check_position_exists(self):
 		mock_host = Mock(spec=reversi.Host)
 		b = reversi.Board(mock_host)
-		self.assertEqual(b.check_position_exists((9,9)), False)
-		self.assertEqual(b.check_position_exists((3,19)), False)
-		self.assertEqual(b.check_position_exists((13,4)), False)
-		self.assertEqual(b.check_position_exists((9,'a')), False)
-		self.assertEqual(b.check_position_exists(('+','a')), False)
+		self.assertEqual(b.check_position_exists((9, 9)), False)
+		self.assertEqual(b.check_position_exists((3, 19)), False)
+		self.assertEqual(b.check_position_exists((13, 4)), False)
+		self.assertEqual(b.check_position_exists((9, 'a')), False)
+		self.assertEqual(b.check_position_exists(('+', 'a')), False)
 
-		self.assertEqual(b.check_position_exists((1,2)), True)
-		self.assertEqual(b.check_position_exists((7,5)), True)
-		self.assertEqual(b.check_position_exists((0,0)), True)
-		self.assertEqual(b.check_position_exists((2,4)), True)
-		self.assertEqual(b.check_position_exists((5,7)), True)
+		self.assertEqual(b.check_position_exists((1, 2)), True)
+		self.assertEqual(b.check_position_exists((7, 5)), True)
+		self.assertEqual(b.check_position_exists((0, 0)), True)
+		self.assertEqual(b.check_position_exists((2, 4)), True)
+		self.assertEqual(b.check_position_exists((5, 7)), True)
 
 	def test_create_directions_ingoing(self):
 		mock_host = Mock(spec=reversi.Host)
