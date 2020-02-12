@@ -24,10 +24,10 @@ Obviously being next to a stone of the opponent is required to enclose stones of
   * single exit points for functions:
 
 In the check_enclose_opponent() I disagree with pylint about dead code.
-~~~~
-take06.py:189:8: W0612: Unused variable 'dir_enclose_opponent' (unused-variable)
-take06.py:215:8: R1705: Unnecessary "else" after "return" (no-else-return)
-~~~~
+
+> take06.py:189:8: W0612: Unused variable 'dir_enclose_opponent' (unused-variable)
+> take06.py:215:8: R1705: Unnecessary "else" after "return" (no-else-return)
+
 There is an if statement, and in the then case a return statement. The code pylint thinks is unused is after this statement. I checked (print to scree) that the variable dir_enclose_opponent (a list of directions in which stones of the opponent are enclosed) is used.
 Since this should not happen to begin with I should refactor the code...
 
