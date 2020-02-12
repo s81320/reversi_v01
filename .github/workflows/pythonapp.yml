@@ -31,6 +31,7 @@ jobs:
         pytest test06.py
     - name: Create documentation with pydoc
       run: |
+        pwd
         pydoc -w take06
 
     - uses: actions/upload-artifact@v1
