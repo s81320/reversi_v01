@@ -130,12 +130,10 @@ class Board:
 
     def check_position_exists(self, position):
         """Returns True iff (position) is on the board."""
-        #print("in Brett : check position exists")
         return (position[0] in range(self.size)) and (position[1] in range(self.size))
 
     def check_position_free(self, position):
         """Check if a (position) is free. Returns True iff no stone is already placed on that position."""
-        #print("in Brett : check position free")
         return self.board[position] == -1
 
     def check_position_for_same_occupancy(self, position1, position2):
@@ -199,17 +197,18 @@ class Board:
                     #print("not same colour, append" , dir_touch_opponent)
         return dir_touch_opponent
 
-    def select_directions_enclosing(self, own_player_id, start_pos_on_beam, directions):
-        """Of all (directions) in which the player (own_player_id) directly touches a stone of the opponent
+    def select_directions_enclosing(self, player_id, start_pos_on_beam, directions):
+        """Of all (directions) in which the player (player_id) directly touches a stone of the opponent
         select those where at some time there comes a stone of the own colour again.
         that is for player 1 in that direction there is    1 0 1   or    1 0 0 0 1
 
-        For a player (player_id) at a position (start_pos_on_beam) in a direction (element of directions):
+        For a player (player_id) at a position (start_pos_on_beam) walking on the board in a direction (element of directions):
         What happens first:
         1) get to limit of the board,
         2) meet an empty position,
-        3) meet a stone of the opponent?
-        If it is no 3 then apend the direction to the list that will later be returned.
+        3) meet your own colour again
+        If it is no 3 then the player does enclose the opponent in this direction. 
+        So, append the direction to the list that will later be returned.
 
         Requires (directions) to be ingoing and touching directions.
         The following methods of class Board should be called to get the correct (directions):
@@ -220,26 +219,29 @@ class Board:
             walk_on_beam = True # starting at (start_pos_on_beam) walking on the board in (direction) we create a straight line path, i.e. a beam
             pos_on_beam = start_pos_on_beam
             while walk_on_beam:
-                step_further_on_beam = tuple(np.array(pos_on_beam) + np.array(direction)) # a step (further) in direction
+                step_further_on_beam = tuple(np.array(pos_on_beam) + np.array(direction)) # a step further in (direction)
                 if self.check_position_exists(step_further_on_beam) and not self.check_position_free(step_further_on_beam):
-                    if self.check_for_same_colour(own_player_id, step_further_on_beam): # meet your own colour again! it's an enclosing!
+                    if self.check_for_same_colour(player_id, step_further_on_beam): # meet your own colour again! it's an enclosing!
                         dir_enclose_opponent.append(direction)
                         walk_on_beam = False
                     else:
                         pos_on_beam = step_further_on_beam # walk on and look for a stone of your own colour
                 else:
-                    walk_on_beam = False # steped on empty field or out of bounds of the board
+                    walk_on_beam = False # stepped on empty field or out of bounds of the board
         return dir_enclose_opponent
 
     def check_enclose_opponent(self, player_id, position):
-        """ Check if starting from the (position)
-        there is a straight line / a beam such that stones of the opponent are enclosed by the current player:
-        if the current player has colour / number / id 1 then the following 2 would be ok.
-        1 0 0 0 1
-        or 0 1 1 0
-        but these would not be ok
-        1 1 0 0 1
-        1 0 0
+        """A player (player_id) canset a stone at a (position) if - along a line of stones on the board -
+        an enclosing of the opponents stones is created.
+        If player 1 sets a stone right next to a line like 0 0 1 so that it becomes 1 0 0 1,
+        or 1 0 0 0 so that it becomes 1 0 0 0 1.
+        Similarly for up - down directions or on other directions like south west to north east.
+        
+        Starting from all possible directions reduce to ingoing directions: 
+            positions, such that position + direction stays on the board
+        From all ingoing directions reduce to directions that touch an opponents stone: 
+            that are directly adjacent to a stone of the opponent
+        From these directions reduce to directions that enclose the opponents stones.
         """
         directions = self.create_directions_ingoing(position)
         dir_touch_opponent = self.select_directions_touching(player_id, position, directions)
