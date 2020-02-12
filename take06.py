@@ -1,12 +1,9 @@
 # 10.2.2020
 """Should I have a docstring for the whole file?"""
-# import numpy as np # this library is not used
+import numpy as np # this library is not used - not yet ... 11.2.2020
 import matplotlib.pyplot as plt
 
 #run with python or pythonw (for MacOS)
-
-
-# __all__  =  ['Host', 'Player', 'Board']
 
 class Player:
     """The player class. What can I say??"""
@@ -94,35 +91,10 @@ class Board:
     def update_board(self, player_id):
         """When a player has put a new stone on the board newly includes / cought stones turn change color"""
         new_stone = self.accepted_stone
-        directions = self.get_directions(new_stone)
 
-        dir_touch_opponent = []
-
-        for direction in directions:
-            if self.board[tuple(x+y for x, y in zip(new_stone, direction))] == (1+player_id)%2:
-                dir_touch_opponent.append(direction)
-        print("dir touch opponent ", dir_touch_opponent)
-
-        dir_enclose_opponent = []
-
-        for direction in dir_touch_opponent:
-            pos = new_stone
-            #print("initial position ", pos)
-            dicided = False
-            while not dicided:
-                try:
-                    next_field = self.board[tuple(x+y for x, y in zip(pos, direction))]
-                except KeyError:
-                    dicided = True
-
-                if next_field == (1+player_id)%2:
-                    pos = tuple(x+y for x, y in zip(pos, direction))
-                    #print("new position " , pos)
-                elif next_field == player_id:
-                    dir_enclose_opponent.append(direction)
-                    dicided = True
-                else:
-                    dicided = True
+        directions = self.create_directions_ingoing(new_stone)
+        dir_touch_opponent = self.select_directions_touching(player_id, new_stone, directions)
+        dir_enclose_opponent = self.select_directions_enclosing(player_id, new_stone, dir_touch_opponent)
 
         for direction in dir_enclose_opponent:
             pos = new_stone
@@ -149,8 +121,10 @@ class Board:
 
 
     def check_stone(self, player_id, position):
-        """Calls three other check-functions."""
-        #print("in Brett : check Stone")
+        """Calls three other check-functions.
+        Check if the proposed position is within the boundries of the board,
+        if the position is free / empty and if it creates an enclosing of the stones of the opponent.
+        """
         #code executes only until the first False
         return self.check_position_exists(position) and self.check_position_free(position) and self.check_enclose_opponent(player_id, position)
 
@@ -164,51 +138,113 @@ class Board:
         #print("in Brett : check position free")
         return self.board[position] == -1
 
-    def get_directions(self, position):
-        """Given a (position) this function returns all other positions that are adjacent to this position and on the board."""
-        all_directions = [(1, 0), (-1, 0), (0, 1), (0, -1), (-1, -1), (-1, 1), (1, 1), (1, -1)]
-        dont_remember_what_it_is = [[x+y for x, y in zip(position, direction) if x+y in range(self.size)] for direction in all_directions]
-        mask = [len(d) == 2 for d in dont_remember_what_it_is]
-        return [all_directions[i] for i in range(8) if mask[i]]
+    def check_position_for_same_occupancy(self, position1, position2):
+        """Returns True if on both positions there is the same colour or if both positions are empty."""
+        return self.board[position1] == self.board[position2]
 
-    def check_enclose_opponent(self, player_id, position):
-        """For a player (player_id) to set a stone at a specified (position), this has to create an enclosing of the opponents' stones."""
-        print("in Brett : check enclose opponent")
-        directions = self.get_directions(position)
+    def check_position_for_same_colour(self, position1, position2):
+        """Returns True if both positions are occupied by the same player."""
+        return (not self.check_position_free(position1)) and self.check_position_for_same_occupancy(position1, position2)
+
+    def check_for_same_colour(self, arg1, arg2):
+        """Should be called with arguments either of type tuple or the same as player.number, int (with values 0 or 1) at the moment.
+        Where the argument is a player.number - what then??"""
+        return_value = True
+        if isinstance(arg1, tuple):
+            if isinstance(arg2, tuple):
+                return_value = self.check_position_for_same_colour(arg1, arg2)
+            else:
+                if isinstance(arg2, int):
+                    return_value = (self.board[arg1] == arg2)
+        else:
+            if isinstance(arg1, int):
+                if isinstance(arg2, tuple):
+                    return_value = (arg1 == self.board[arg2])
+                else:
+                    if isinstance(arg2, int):
+                        return_value = (arg1 == arg2)
+
+        return return_value
+
+    def create_directions_ingoing(self, position):
+        """Given a (position) this function
+        returns all directions that lead to a position that is adjacent to this position and on the board."""
+
+        all_directions = ((1, 0), (-1, 0), (0, 1), (0, -1), (-1, -1), (-1, 1), (1, 1), (1, -1))
+
+        # filter returns an iterator, we have to materialize the filter and turn it into a tuple (or list or whatever...)
+        return tuple(filter(lambda x: self.check_position_exists(np.array(position)+x), all_directions))
+        # all directions used to be a list, now it is a tuple. Seems to work fine...
+        # filter needs the data to be filtered as a iterable container
+
+    def select_directions_touching(self, own_player_id, position, directions):
+        """Of all ingoing directions / directions that from (position) in (directions) stay on the board
+        select those where the current player (own_player_id) touches / is directly adjacent to a stone of the opponent.
+        For player 1 it would be necessary to put a stone such that in (direction) we see 1 0 .
+        Especially a stone cannot be placed on a (position) where it would be surrounded by empty positions only.
+
+        input: a n-tuple of directions, n in {0,..,8}, with each direction a 2-tuple.
+        output: a possibly reduced input tuple. """
+
+        #print("in select directions touching")
+        #print("args: " , position , directions)
         dir_touch_opponent = []
         for direction in directions:
-            if self.board[tuple(x+y for x, y in zip(position, direction))] == (1+player_id)%2:
-                dir_touch_opponent.append(direction)
-        print("dir touch opponent ", dir_touch_opponent)
-
-        # this is a break statement - function can be exited at this point
-        if len(dir_touch_opponent) == 0:
-            return False
-
-        print("is this ever reached? pylint thinks it's not.")
-        dir_enclose_opponent = []
-        for direction in dir_touch_opponent:
             pos = position
-            #print("initial position ", pos)
-            dicided = False
-            while not dicided:
-                try:
-                    next_field = self.board[tuple(x+y for x, y in zip(pos, direction))]
-                except KeyError:
-                    dicided = True
+            adjacent_pos = tuple(np.array(pos) + np.array(direction))
+            if self.check_position_exists(adjacent_pos) and not self.check_position_free(adjacent_pos):
+                #print("position exists and occupied: " , adjacent_pos)
+                if not self.check_for_same_colour(own_player_id, adjacent_pos):
+                    dir_touch_opponent.append(direction)
+                    #print("not same colour, append" , dir_touch_opponent)
+        return dir_touch_opponent
 
-                if next_field == (1+player_id)%2:
-                    pos = tuple(x+y for x, y in zip(pos, direction))
-                    #print("new position ", pos)
-                elif next_field == player_id:
-                    return True
+    def select_directions_enclosing(self, own_player_id, start_pos_on_beam, directions):
+        """Of all (directions) in which the player (own_player_id) directly touches a stone of the opponent
+        select those where at some time there comes a stone of the own colour again.
+        that is for player 1 in that direction there is    1 0 1   or    1 0 0 0 1
+
+        For a player (player_id) at a position (start_pos_on_beam) in a direction (element of directions):
+        What happens first:
+        1) get to limit of the board,
+        2) meet an empty position,
+        3) meet a stone of the opponent?
+        If it is no 3 then apend the direction to the list that will later be returned.
+
+        Requires (directions) to be ingoing and touching directions.
+        The following methods of class Board should be called to get the correct (directions):
+        select_ingoing_directions , select_touching_directions."""
+        dir_enclose_opponent = []
+
+        for direction in directions:
+            walk_on_beam = True # starting at (start_pos_on_beam) walking on the board in (direction) we create a straight line path, i.e. a beam
+            pos_on_beam = start_pos_on_beam
+            while walk_on_beam:
+                step_further_on_beam = tuple(np.array(pos_on_beam) + np.array(direction)) # a step (further) in direction
+                if self.check_position_exists(step_further_on_beam) and not self.check_position_free(step_further_on_beam):
+                    if self.check_for_same_colour(own_player_id, step_further_on_beam): # meet your own colour again! it's an enclosing!
+                        dir_enclose_opponent.append(direction)
+                        walk_on_beam = False
+                    else:
+                        pos_on_beam = step_further_on_beam # walk on and look for a stone of your own colour
                 else:
-                    dicided = True
-        return False
+                    walk_on_beam = False # steped on empty field or out of bounds of the board
+        return dir_enclose_opponent
 
-        # check that the set stone is adjacent to a stone of the opponent
-        # check that there exists a direction such that in that direction
-        # at some point lies a stone of the same colour as the set stone
+    def check_enclose_opponent(self, player_id, position):
+        """ Check if starting from the (position)
+        there is a straight line / a beam such that stones of the opponent are enclosed by the current player:
+        if the current player has colour / number / id 1 then the following 2 would be ok.
+        1 0 0 0 1
+        or 0 1 1 0
+        but these would not be ok
+        1 1 0 0 1
+        1 0 0
+        """
+        directions = self.create_directions_ingoing(position)
+        dir_touch_opponent = self.select_directions_touching(player_id, position, directions)
+        dir_enclose_opponent = self.select_directions_enclosing(player_id, position, dir_touch_opponent)
+        return len(dir_enclose_opponent) > 0
 
     def set_stone(self, player_id, position):
         """A stone is set on the board. Input: who (player_id_) sets the stone where (position)."""
@@ -236,13 +272,10 @@ class Host:
     def setup_board(self):
         """soll man nicht machen: direkt auf die Daten zugreifen. Besser: Methode benutzen!"""
         # initial stones for player 0
-        stones_0 = [(int(self.my_board.size/2)-1, int(self.my_board.size/2)-1), (int(self.my_board.size/2)-1, int(self.my_board.size/2))]
-        self.my_board.board[stones_0[0]] = 0
-        self.my_board.board[stones_0[1]] = 0
-        # initial stones fpr player 1
-        stones_1 = [(int(self.my_board.size/2), int(self.my_board.size/2)), (int(self.my_board.size/2), int(self.my_board.size/2)-1)]
-        self.my_board.board[stones_1[0]] = 1
-        self.my_board.board[stones_1[1]] = 1
+        self.my_board.board[(3, 3)] = 0
+        self.my_board.board[(3, 4)] = 0
+        self.my_board.board[(4, 3)] = 1
+        self.my_board.board[(4, 4)] = 1
 
         self.my_board.stones_set = 4
 
@@ -279,6 +312,7 @@ def main():
     host = Host()
     board = host.create_board()
     host.setup_board()
+
     player = host.create_2_players()
     board.print_board()
     board.update_scores()
