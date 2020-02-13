@@ -37,7 +37,8 @@ class Player:
         print("Set a "+colours[self.get_my_number()]+" stone.")
         # get position from player - person
         for i in range(2):
-            pos[i] = input(f"Input coordinate { i +1 } for your chosen position. Input an integer, range 0 to 7: ")
+            pos[i] = input("input where you want to set the stone, one coordinate at a time. Range 0 to 7:")
+      #      pos[i] = input(f"Input coordinate { i +1 } for your chosen position. Input an integer, range 0 to 7: ")
         return [int(pos[0]), int(pos[1])]
 
 
