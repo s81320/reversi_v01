@@ -28,11 +28,14 @@ jobs:
       run: |
         # put anything here that works in cli : pwd , ls -la , ...
         pip install pytest
-        pytest test06.py
+        pytest test06.py > test_output.txt
+        pwd
+        ls 
     - name: Create documentation with pydoc
       run: |
-        pwd
         pydoc -w take06
+        pwd
+        ls # should list take06.html
         
    # - name: create smthn
    #   run: |
