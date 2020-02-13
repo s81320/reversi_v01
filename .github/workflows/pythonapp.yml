@@ -40,11 +40,12 @@ jobs:
         pydoc take06 > doc_output.txt
         pwd
         echo 'Documentation'
-        head -5 doc_output.txt 
-        artifacts:
-          paths:
-           - test_output.txt
-           - doc_output.txt  
+        head -5 doc_output.txt
+    - name: upload my stuff
+    - uses: actions/upload-artifact@v1
+      with:
+        path: test_output.txt
+            
    # - name: create smthn
    #   run: |
    #     mkdir -p path/to/artifact
