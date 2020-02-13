@@ -37,8 +37,9 @@ jobs:
         echo $HOME
     - name: Create documentation with pydoc
       run: |
-        pydoc -w take06
+        pydoc take06
         pwd
+        echo 'waiting for documentation to work, no html this time.'
         ls # should list take06.html but does not
         
    # - name: create smthn
