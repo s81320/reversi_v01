@@ -44,8 +44,8 @@ jobs:
     - name: upload my stuff
     - uses: actions/upload-artifact@v1
       with:
-        path: test_output.txt
-            
+        name: test_output.txt
+        path: .
    # - name: create smthn
    #   run: |
    #     mkdir -p path/to/artifact
