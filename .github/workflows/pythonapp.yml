@@ -33,11 +33,12 @@ jobs:
       run: |
         pwd
         pydoc -w take06
+        
     - name: create smthn
       run: |
         mkdir -p path/to/artifact
         echo hello > path/to/artifact/world.txt
-      uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v1  
         with:
           name: my-artifact
           path: path/to/artifact
