@@ -28,7 +28,7 @@ jobs:
       run: |
         # put anything here that works in cli : pwd , ls -la , ...
         pip install pytest
-        pytest test06.py > test_output.txt
+        pytest -v test06.py > test_output.txt
     - name: Create documentation with pydoc
       run: |
         pydoc take06 > doc_output.txt
