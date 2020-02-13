@@ -41,7 +41,6 @@ jobs:
         pwd
         echo 'Documentation'
         head -5 doc_output.txt
-    - name: upload my stuff
     - uses: actions/upload-artifact@v1
       with:
         name: test_output.txt
