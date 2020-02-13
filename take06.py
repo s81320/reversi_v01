@@ -264,8 +264,8 @@ class Host:
     """The Host controlls the game. players communicate with the host, and s/he interacts with the board."""
     def __init__(self):
         """The host will have a board and players, to be created later. The host has a log file."""
-        self.my_board: Board
-        self.my_player: list
+        #self.my_board: Board
+        #self.my_player: list
 
     def create_board(self):
         """The host creates the board. For size n there will be n*n possible positions for the stones to set."""
