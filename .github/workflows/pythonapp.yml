@@ -32,7 +32,11 @@ jobs:
     - name: Create documentation with pydoc
       run: |
         pydoc take06 > doc_output.txt
+    - name: collect artifacts for upload
+      run: |
+        mkdir ./artifa
+        mv *_output.txt artifa
     - uses: actions/upload-artifact@v1
       with:
         name: folder-name
-        path: doc_test.txt
+        path: artifa/
