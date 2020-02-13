@@ -30,12 +30,16 @@ jobs:
         pip install pytest
         pytest test06.py > test_output.txt
         pwd
-        ls 
+        head -n 5 test_output.txt
+    - name: check out my environment
+      run: |
+        pwd
+        echo $HOME
     - name: Create documentation with pydoc
       run: |
         pydoc -w take06
         pwd
-        ls # should list take06.html
+        ls # should list take06.html but does not
         
    # - name: create smthn
    #   run: |
