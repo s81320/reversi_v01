@@ -28,22 +28,12 @@ jobs:
       run: |
         # put anything here that works in cli : pwd , ls -la , ...
         pip install pytest
-        mkdir artifacts_to_upload
-        pytest test06.py > artifacts_to_upload/test_output.txt
-        pwd
-        head -n 5 test_output.txt
-    - name: check out my environment
-      run: |
-        pwd
-        echo $HOME
+        pytest test06.py > test_output.txt
     - name: Create documentation with pydoc
       run: |
-        pydoc take06 > artifacts_to_upload/doc_output.txt
-        pwd
-        echo 'Documentation'
-        head -5 doc_output.txt
+        pydoc take06 > doc_output.txt
     - uses: actions/upload-artifact@v1
       with:
-        name: test_output.txt
-        path: artifacts_to_upload
+        name: folder-name
+        path: .
 
