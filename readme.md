@@ -22,11 +22,16 @@ see my [wiki of reversi](https://github.com/s81320/reversi/wiki/clean-code)
 automated build with github action
 ![Python application](https://github.com/s81320/reversi/workflows/Python%20application/badge.svg)
 
-This build includes testing and documentation as html documents.
+This build includes testing with pytest and documentation with pydoc. The created documents are uploaded (from the virtual machine this is executed in) using an artifact upload action. Getting this done in the yml file directly tought me a lot.
 
 ## 5 unit tests
+
+testing is done in a testfile to be executed with pytest.
+
 ## 6 continuous delivery
-show pipepines in circle ci , travis ci
+
+ci with circle ci:  [![<ORG_NAME>](https://circleci.com/gh/s81320/reversi.svg?style=svg)](https://circleci.com/gh/s81320/workflows/reversi/tree/master)
+
 ## 7 ide
 ## 8 DSL demo example snipplet
 ## 9 functional programming
