@@ -39,9 +39,12 @@ jobs:
       run: |
         pydoc take06 > doc_output.txt
         pwd
-        echo 'waiting for documentation to work, no html this time.'
-        ls # should list take06.html but does not
-        
+        echo 'Documentation'
+        head -5 doc_output.txt 
+        artifacts:
+          paths:
+           - test_output.txt
+           - doc_output.txt  
    # - name: create smthn
    #   run: |
    #     mkdir -p path/to/artifact
