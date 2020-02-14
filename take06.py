@@ -6,13 +6,12 @@ import matplotlib.pyplot as plt
 #run with python or pythonw (for MacOS)
 
 class Player:
-    """Two players compete against each other. 
-    Players communicate through their mediator, the Host. 
+    """Two players compete against each other.
+    Players communicate through their mediator, the Host.
     Players are identified by their (number), either 0 or 1."""
     # class variables, shared by all instances of this class
     num_players_created = 0
     max_num_players = 2
-
 
     # class variable max_num_players has to be set before calling __init__
     def __init__(self, host):
@@ -33,7 +32,6 @@ class Player:
         for i in range(2):
             pos[i] = input("input where you want to set the stone, one coordinate at a time. Range 0 to 7:")
         return [int(pos[0]), int(pos[1])]
-
 
     def negotiate_stone(self):
         """A player-object gets a keyboard-input from the player-human. If not successful (out of bounds, not free), no stone is set and the game continues (with the next player)."""
@@ -56,13 +54,13 @@ class Player:
 
 class Board:
     """The reversi board is an 8 x 8 squares board.
-    The Host sets stones on the board. 
-    Players communicate to the Host where the stone should be set 
+    The Host sets stones on the board.
+    Players communicate to the Host where the stone should be set
     and the Host checks for compliance with reversi rules.
 
     Once a stone is accepted and set the board is updated according to reversi rules:
     Stones of the opponent that are enclosed (along a straight line: up/down-wards, left-to-right or in a diagonal fashion)
-    by the new stone of the active player and an old stone (also belonging to the active player) change colour 
+    by the new stone of the active player and an old stone (also belonging to the active player) change colour
     and become stones of the active player."""
     def __init__(self, host):
         """init."""
@@ -138,10 +136,9 @@ class Board:
         return self.board[position1] == self.board[position2]
 
     def check_for_different_colour(self, arg1_position, arg2):
-        """Returns True if arg1_position is a position (type tuple) and 
+        """Returns True if arg1_position is a position (type tuple) and
         occupied and with a different colour from arg2, which may be a position or a colour (type tuple or int).
-        So the ordering is imortant here. There is flexibility only in the second argument. 
-        """
+        So the ordering is imortant here. There is flexibility only in the second argument."""
         return (not self.check_position_free(arg1_position)) and (not self.check_for_same_colour(arg1_position, arg2))
 
     def check_position_for_same_colour(self, position1, position2):
@@ -171,15 +168,15 @@ class Board:
         # filter needs the data to be filtered as a iterable container
 
     def select_directions_touching(self, player_id, position, directions):
-        """Filters directions such that (position) + (direction) is 
+        """Filters directions such that (position) + (direction) is
         of different colour than the players own stone (player_id).
         Requires input (directions) to be of ingoing directions only."""
-        return tuple(filter(lambda x: self.check_for_different_colour( tuple(np.array(position)+np.array(x)), player_id), directions))
+        return tuple(filter(lambda x: self.check_for_different_colour(tuple(np.array(position)+np.array(x)), player_id), directions))
 
 
-    def walk_on_beam (self , colour , position , direction ):
+    def walk_on_beam(self, colour, position, direction):
         """Recursion replacing a while loop.
-        On the reversi board a beam is formed 
+        On the reversi board a beam is formed
         starting at the (position) a new stone may be [checking stone] or has been [update board] set
         in a given (direction).
         colour is the colour of the stone that may be or has been set. This is at (position).
@@ -191,19 +188,19 @@ class Board:
         next_pos = tuple(np.array(position) + np.array(direction))
 
         if not self.check_position_exists(next_pos): # position is on the boundary, next_pos is off the board
-            return False 
+            return False
         elif self.check_position_free(next_pos): # position exists, is on board -> but empty
             return False
-        elif self.check_for_same_colour(next_pos , colour): # next_pos is on the board and occupied -> colours match
+        elif self.check_for_same_colour(next_pos, colour): # next_pos is on the board and occupied -> colours match
             return True
         else: # undecided -> walk to next position on the beam
-            return self.walk_on_beam(colour, next_pos , direction)
+            return self.walk_on_beam(colour, next_pos, direction)
 
     def select_directions_enclosing(self, player_id, start_pos, directions):
-        """Filters directions d such that along the beam starting in start_pos and in direction d 
+        """Filters directions d such that along the beam starting in start_pos and in direction d
         at some time another stone is met that has the colour belonging to (player_id).
         This means setting a stone at start_pos would create an enclosing of the opponent players stones. """
-        return tuple( filter(lambda d : self.walk_on_beam(player_id , np.array(start_pos) + np.array(d), np.array(d)) , directions) )
+        return tuple(filter(lambda d: self.walk_on_beam(player_id, np.array(start_pos) + np.array(d), np.array(d)), directions))
 
 
     def check_enclose_opponent(self, player_id, position):
@@ -212,13 +209,12 @@ class Board:
         If player 1 sets a stone right next to a line like 0 0 1 so that it becomes 1 0 0 1,
         or 1 0 0 0 so that it becomes 1 0 0 0 1.
         Similarly for up - down directions or on other directions like south west to north east.
-        
-        Starting from all possible directions reduce to ingoing directions: 
-            positions, such that position + direction stays on the board
-        From all ingoing directions reduce to directions that touch an opponents stone: 
+
+        Starting from all possible directions reduce to ingoing directions:
+        positions, such that position + direction stays on the board
+        From all ingoing directions reduce to directions that touch an opponents stone:
             that are directly adjacent to a stone of the opponent
-        From these directions reduce to directions that enclose the opponents stones.
-        """
+        From these directions reduce to directions that enclose the opponents stones."""
         directions = self.create_directions_ingoing(position)
         dir_touch_opponent = self.select_directions_touching(player_id, position, directions)
         dir_enclose_opponent = self.select_directions_enclosing(player_id, position, dir_touch_opponent)
@@ -256,13 +252,13 @@ class Host:
     def evaluate_stone(self, player_id, position):
         """Check stone and set it , return True or False"""
         return self.my_board.set_stone(player_id, tuple(position))
-       
+
 def next_player(i):
     """get the id for the next player"""
     return (1+i)%2
 
 def main():
-    """Players act one at a time. Each time through the loop one player is allowed to set a stone. 
+    """Players act one at a time. Each time through the loop one player is allowed to set a stone.
     The other player is sometimes called the opponent.
     Roles change at the end of each loop."""
     print("***********************")
