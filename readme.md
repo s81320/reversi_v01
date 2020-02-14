@@ -18,6 +18,8 @@ I worked with pylint to get hints for how to improve the code. I had quite a lot
 
 see my [wiki of reversi](https://github.com/s81320/reversi/wiki/clean-code)
 
+cheat sheet link at the bottom.
+
 ## 4 build management
 automated build with github action
 ![Python application](https://github.com/s81320/reversi/workflows/Python%20application/badge.svg)
@@ -33,6 +35,14 @@ testing is done in a testfile to be executed with pytest.
 ci with circle ci:  [![<ORG_NAME>](https://circleci.com/gh/s81320/reversi.svg?style=svg)](https://circleci.com/gh/s81320/workflows/reversi/tree/master)
 
 ## 7 ide
+
+i still like to work with sublime text and do things in the terminal.
+
+Hower, intelliJ definitely has its advantages! These are my most used abbreviations in intelliJ:
+
+[keys1](https://github.com/s81320/reversi/blob/master/pictures/intelliJ-1.png) [keys2](https://github.com/s81320/reversi/blob/master/pictures/intelliJ-2.png) and this list was also helpful:
+[intelliJ keys](https://resources.jetbrains.com/storage/products/intellij-idea/docs/IntelliJIDEA_ReferenceCard.pdf?_ga=2.136755446.751887257.1581684340-1608094495.1581684340)
+
 ## 8 DSL demo example snipplet
 
 see my [wiki of reversi](https://github.com/s81320/reversi/wiki/a-domain-specific-language-for-reversi)
