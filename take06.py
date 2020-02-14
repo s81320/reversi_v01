@@ -239,12 +239,9 @@ class Board:
 class Host:
     """The Host controlls the game. players communicate with the host, and s/he interacts with the board."""
     def __init__(self):
-        """The host will have a board and players, to be created later. The host has a log file."""
-
-    def create_board(self):
-        """The host creates the board. For size n there will be n*n possible positions for the stones to set."""
+        """The host is mediator between the boardt and two playerse."""
         self.my_board = Board(self)
-        return self.my_board
+        self.my_player = [Player(self), Player(self)]
 
     def setup_board(self):
         """soll man nicht machen: direkt auf die Daten zugreifen. Besser: Methode benutzen!"""
@@ -255,10 +252,6 @@ class Host:
         self.my_board.board[(4, 4)] = 1
 
         self.my_board.stones_set = 4
-
-    def create_2_players(self):
-        """The host creates 2 players."""
-        return [Player(self), Player(self)]
 
     def evaluate_stone(self, player_id, position):
         """Check stone and set it , return True or False"""
@@ -282,42 +275,41 @@ def main():
     print("*** If a player sets a stone incorrectly, no stone is set. It is then the opponents turn to set a stone.")
     print("*** The game ends when the board is full or whenever the red player puts a stone incorrectly and the blue player immediately afterwards, too.")
     print("*** Game is interrupted at input ctrl+C followed by enter.")
+    print("***********************")
 
     host = Host()
-    board = host.create_board()
     host.setup_board()
 
-    player = host.create_2_players()
-    board.print_board()
-    board.update_scores()
-    print("Scores:", board.get_scores())
+    host.my_board.print_board()
+    host.my_board.update_scores()
+    print("Scores:", host.my_board.get_scores())
 
     game_on = True
     current = 0
     last = 0
-    max_number_of_turns = board.max_number_stones # define getter for max_number_of_stones
+    max_number_of_turns = host.my_board.max_number_stones # define getter for max_number_of_stones
     # better: move it all into Host or Board !!
 
     while game_on:
-        player[current].negotiate_stone()
-        if player[current].last_stone_accepted:
-            board.update_board(player[current].get_my_number())
-            board.print_board()
-            board.update_scores()
-            print("Punkte:", board.get_scores())
+        host.my_player[current].negotiate_stone()
+        if host.my_player[current].last_stone_accepted:
+            host.my_board.update_board(host.my_player[current].get_my_number())
+            host.my_board.print_board()
+            host.my_board.update_scores()
+            print("Punkte:", host.my_board.get_scores())
 
         last = current
         current = next_player(current)
 
         print("end of round. Next round?")
-        print("last_stone_accepted ", player[0].last_stone_accepted, player[1].last_stone_accepted)
-        print("all stones set? ", board.stones_set, " < ", max_number_of_turns, "?")
-        game_on = ((player[last].last_stone_accepted or player[current].last_stone_accepted) and (board.stones_set < max_number_of_turns))
+        print("last_stone_accepted ", host.my_player[0].last_stone_accepted, host.my_player[1].last_stone_accepted)
+        print("all stones set? ", host.my_board.stones_set, " < ", max_number_of_turns, "?")
+        game_on = ((host.my_player[last].last_stone_accepted or host.my_player[current].last_stone_accepted) and (host.my_board.stones_set < max_number_of_turns))
     print("*****************")
     print("*** game over ***")
     print("*****************")
 
-    scores_at_end = board.get_scores()
+    scores_at_end = host.my_board.get_scores()
     print("Scores for red and blue:", scores_at_end)
     if scores_at_end[0] > scores_at_end[1]:
         print("************************")
@@ -328,7 +320,9 @@ def main():
         print("*** blue Player wins ***")
         print("************************")
     else:
-        print("Both win.")
+        print("************************")
+        print("*** Both player win. ***")
+        print("************************")
 
 if __name__ == "__main__":
     main()
