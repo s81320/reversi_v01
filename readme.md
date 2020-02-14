@@ -34,6 +34,8 @@ ci with circle ci:  [![<ORG_NAME>](https://circleci.com/gh/s81320/reversi.svg?st
 
 ## 7 ide
 ## 8 DSL demo example snipplet
+
+see my [wiki of reversi](https://github.com/s81320/reversi/wiki/a-domain-specific-language-for-reversi)
 ## 9 functional programming
 
 see my [wiki of reversi](https://github.com/s81320/reversi/wiki/functional-programming)
