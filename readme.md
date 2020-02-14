@@ -28,7 +28,7 @@ This build includes testing with pytest and documentation with pydoc. The create
 
 ## 5 unit tests
 
-testing is done in a testfile to be executed with pytest.
+unittests are in test06.py to be executed with pytest. This is included in the automated testing in github actions.
 
 ## 6 continuous delivery
 
@@ -36,9 +36,9 @@ ci with circle ci:  [![<ORG_NAME>](https://circleci.com/gh/s81320/reversi.svg?st
 
 ## 7 ide
 
-i still like to work with sublime text and do things in the terminal.
+i like working with sublime text and doing things in the terminal.
 
-Hower, intelliJ definitely has its advantages! These are my most used abbreviations in intelliJ:
+However, intelliJ definitely has its advantages! These are my most used abbreviations in intelliJ:
 
 [keys1](https://github.com/s81320/reversi/blob/master/pictures/intelliJ-1.png) [keys2](https://github.com/s81320/reversi/blob/master/pictures/intelliJ-2.png) and this list was also helpful:
 [intelliJ keys](https://resources.jetbrains.com/storage/products/intellij-idea/docs/IntelliJIDEA_ReferenceCard.pdf?_ga=2.136755446.751887257.1581684340-1608094495.1581684340)
