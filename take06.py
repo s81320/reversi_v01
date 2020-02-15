@@ -27,24 +27,18 @@ class Player:
         returns a position as a tuple. No error handling."""
         pos = [-1, -1]
         colours = ['red', 'blue']
-        print("Set a "+colours[self.get_my_number()]+" stone.")
+        print("Set a "+colours[self.get_number()]+" stone.")
         # get position from player - person
         for i in range(2):
-            pos[i] = input("input where you want to set the stone, one coordinate at a time. Range 0 to 7:")
+            pos[i] = input("one co-ordinate, range 0 to 7:")
         return [int(pos[0]), int(pos[1])]
 
     def negotiate_stone(self):
         """A player-object gets a keyboard-input from the player-human. If not successful (out of bounds, not free), no stone is set and the game continues (with the next player)."""
         proposed_stone = self.propose_stone()
-        self.last_stone_accepted = self.my_host.evaluate_stone(self.get_my_number(), proposed_stone)
+        self.last_stone_accepted = self.my_host.evaluate_stone(self.get_number(), proposed_stone)
 
-    @classmethod
-    def get_number_of_players(cls):
-        """Returns the class-attribute number of players."""
-        #return Player.num_players
-        return cls.num_players_created
-
-    def get_my_number(self):
+    def get_number(self):
         """returns the ID - number of a player."""
         return int(self.number)
 
@@ -229,7 +223,7 @@ class Board:
             self.stones_set += 1
             return True
         else:
-            print("Stone rejected.")
+            print("Your stone was rejected. Next player, please.")
             return False
 
 class Host:
@@ -267,7 +261,7 @@ def main():
     print("*** Rules *************")
     print("***********************")
     print("*** Red and blue take turns in setting stones on the board. Players input positions where they want to set a stone of their colour.")
-    print("*** A stone can only be set adjacent to a stone of the opponent and has to enclose stones of the opponent. Allenclosed stones will change colour and become the colour of the stone just set.")
+    print("*** A stone can only be set adjacent to a stone of the opponent and has to enclose stones of the opponent. All enclosed stones will change colour and become the colour of the stone just set.")
     print("*** If a player sets a stone incorrectly, no stone is set. It is then the opponents turn to set a stone.")
     print("*** The game ends when the board is full or whenever the red player puts a stone incorrectly and the blue player immediately afterwards, too.")
     print("*** Game is interrupted at input ctrl+C followed by enter.")
@@ -278,7 +272,7 @@ def main():
 
     host.my_board.print_board()
     host.my_board.update_scores()
-    print("Scores:", host.my_board.get_scores())
+    print("Scores for red and blue:", host.my_board.get_scores())
 
     game_on = True
     current = 0
@@ -289,18 +283,16 @@ def main():
     while game_on:
         host.my_player[current].negotiate_stone()
         if host.my_player[current].last_stone_accepted:
-            host.my_board.update_board(host.my_player[current].get_my_number())
+            host.my_board.update_board(host.my_player[current].get_number())
             host.my_board.print_board()
             host.my_board.update_scores()
-            print("Punkte:", host.my_board.get_scores())
+            print("Scores for red and blue:", host.my_board.get_scores())
 
         last = current
         current = next_player(current)
 
-        print("end of round. Next round?")
-        print("last_stone_accepted ", host.my_player[0].last_stone_accepted, host.my_player[1].last_stone_accepted)
-        print("all stones set? ", host.my_board.stones_set, " < ", max_number_of_turns, "?")
         game_on = ((host.my_player[last].last_stone_accepted or host.my_player[current].last_stone_accepted) and (host.my_board.stones_set < max_number_of_turns))
+
     print("*****************")
     print("*** game over ***")
     print("*****************")
