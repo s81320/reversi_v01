@@ -16,6 +16,10 @@ A publish / subscribe pattern would also be fitting for a client-server based ve
 
 ![image](https://github.com/s81320/reversi/blob/master/pictures/uml-sequence.png)
 
+The last diagram is not completely finished. sorry. It is about a while loop that i turned into a recursion to fit functional programming.
+
+![image](https://github.com/s81320/reversi/blob/master/pictures/uml-flow-control.png)
+
 ## 2 metrics
 I used sonarcloud
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=s81320_reversi&metric=alert_status)](https://sonarcloud.io/dashboard?id=s81320_reversi)
@@ -57,6 +61,8 @@ However, intelliJ definitely has its advantages! These are my most used abbrevia
 ## 8 DSL demo example snipplet
 
 see my [wiki of reversi](https://github.com/s81320/reversi/wiki/a-domain-specific-language-for-reversi)
+
+also, the uml diagrams were created applying a dsl, platUML.
 ## 9 functional programming
 
 see my [wiki of reversi](https://github.com/s81320/reversi/wiki/functional-programming)
