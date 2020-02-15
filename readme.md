@@ -10,9 +10,11 @@ players gain to outnumber each other on the board.
 
 There are three classes in reversi: Host, Player and Board. Where usually players interact directly with the board by in turn setting their stone on empty positions / spots on the board, in the software version of the game all interaction is mediated by the Host (mediator pattern). The host basically checks that all stones set on the board are in compliance with the rules of reversi. After the setting of a stone the board is updated. 
 
-![image](https://github.com/s81320/reversi/blob/master/pictures/classes.png)
+![image](https://github.com/s81320/reversi/blob/master/pictures/uml-classes.png)
 
 A publish / subscribe pattern would also be fitting for a client-server based version of the game when updating the board. At the moment both players play on one / the same terminal and see the same board.
+
+![image](https://github.com/s81320/reversi/blob/master/pictures/uml-sequence.png)
 
 ## 2 metrics
 I used sonarcloud
