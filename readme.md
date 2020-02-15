@@ -62,7 +62,7 @@ However, intelliJ definitely has its advantages! These are my most used abbrevia
 
 see my [wiki of reversi](https://github.com/s81320/reversi/wiki/a-domain-specific-language-for-reversi)
 
-also, the uml diagrams were created applying a dsl, platUML.
+also, the uml diagrams were created applying a dsl, platUML, at https://www.planttext.com/
 ## 9 functional programming
 
 see my [wiki of reversi](https://github.com/s81320/reversi/wiki/functional-programming)
