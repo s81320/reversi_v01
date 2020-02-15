@@ -2,7 +2,18 @@
 
 Wkipedia explains the rules of [reversi](https://en.wikipedia.org/wiki/Reversi). It is also known as Othello.
 
+![image](https://github.com/s81320/reversi/blob/master/pictures/reversi.png)
+
+players gain to outnumber each other on the board.
+
 ## 1 ULM
+
+There are three classes in reversi: Host, Player and Board. Where usually players interact directly with the board by in turn setting their stone on empty positions / spots on the board, in the software version of the game all interaction is mediated by the Host (mediator pattern). The host basically checks that all stones set on the board are in compliance with the rules of reversi. After the setting of a stone the board is updated. 
+
+![image](https://github.com/s81320/reversi/blob/master/pictures/classes.png)
+
+A publish / subscribe pattern would also be fitting for a client-server based version of the game when updating the board. At the moment both players play on one / the same terminal and see the same board.
+
 ## 2 metrics
 I used sonarcloud
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=s81320_reversi&metric=alert_status)](https://sonarcloud.io/dashboard?id=s81320_reversi)
