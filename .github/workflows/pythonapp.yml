@@ -28,10 +28,10 @@ jobs:
       run: |
         # put anything here that works in cli : pwd , ls -la , ...
         pip install pytest
-        pytest -v test/test.py > test_output.txt
+        pytest -v test.py > test_output.txt
     - name: Create documentation with pydoc
       run: |
-        pydoc src/take07 > doc_output.txt
+        pydoc reversi > doc_output.txt
     - name: collect artifacts for upload
       run: |
         mkdir ./artifa
