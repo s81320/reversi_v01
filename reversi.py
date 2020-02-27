@@ -1,6 +1,6 @@
-# 10.2.2020
-"""Should I have a docstring for the whole file?"""
-import numpy as np # this library is not used - not yet ... 11.2.2020
+# 27.2.2020
+"""Board game reversi (aka othello) for 2 players. Game is played at one terminal."""
+import numpy as np
 import matplotlib.pyplot as plt
 
 #run with python or pythonw (for MacOS)
@@ -13,10 +13,8 @@ class Player:
     num_players_created = 0
     max_num_players = 2
 
-    # class variable max_num_players has to be set before calling __init__
     def __init__(self, host):
         """initialize. Set the number. increase the number of created players."""
-        # print("create Player")
         self.my_host = host
         self.number = Player.num_players_created
         self.last_stone_accepted = True
@@ -41,10 +39,6 @@ class Player:
     def get_number(self):
         """returns the ID - number of a player."""
         return int(self.number)
-
-    def get_other_player_number(self):
-        """works for 2 players only"""
-        return int((1+self.number)%2)
 
 class Board:
     """The reversi board is an 8 x 8 squares board.
@@ -234,8 +228,7 @@ class Host:
         self.my_player = [Player(self), Player(self)]
 
     def setup_board(self):
-        """soll man nicht machen: direkt auf die Daten zugreifen. Besser: Methode benutzen!"""
-        # initial stones for player 0
+        """Initially there are 4 stones at the center of the board, two in each players colour."""
         self.my_board.board[(3, 3)] = 0
         self.my_board.board[(3, 4)] = 0
         self.my_board.board[(4, 3)] = 1
@@ -247,8 +240,8 @@ class Host:
         """Check stone and set it , return True or False"""
         return self.my_board.set_stone(player_id, tuple(position))
 
-def next_player(i):
-    """get the id for the next player"""
+def opponent(i):
+    """get the id for the other player, the opponent"""
     return (1+i)%2
 
 def main():
@@ -277,8 +270,6 @@ def main():
     game_on = True
     current = 0
     last = 0
-    max_number_of_turns = host.my_board.max_number_stones # define getter for max_number_of_stones
-    # better: move it all into Host or Board !!
 
     while game_on:
         host.my_player[current].negotiate_stone()
@@ -288,10 +279,10 @@ def main():
             host.my_board.update_scores()
             print("Scores for red and blue:", host.my_board.get_scores())
 
-        last = current
-        current = next_player(current)
+        game_on = ((host.my_player[last].last_stone_accepted or host.my_player[current].last_stone_accepted) and (host.my_board.stones_set < host.my_board.max_number_stones ))
 
-        game_on = ((host.my_player[last].last_stone_accepted or host.my_player[current].last_stone_accepted) and (host.my_board.stones_set < max_number_of_turns))
+        last = current
+        current = opponent(current)
 
     print("*****************")
     print("*** game over ***")
