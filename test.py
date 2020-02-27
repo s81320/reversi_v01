@@ -3,7 +3,7 @@
 import unittest
 from unittest.mock import Mock
 
-import take07 as reversi
+import reversi
 
 class TestObjectCreation(unittest.TestCase):
 
