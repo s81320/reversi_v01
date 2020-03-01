@@ -1,5 +1,6 @@
 # 27.2.2020
-"""Board game reversi (aka othello) for 2 players (or 1 player impersonating both the player and his/her opponent). Game is played at one terminal."""
+"""Board game reversi (aka othello) for 2 players (or 1 player impersonating both the player and his/her opponent).
+Game is played at one terminal."""
 import numpy as np
 import matplotlib.pyplot as plt
 
