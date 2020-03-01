@@ -221,13 +221,6 @@ class Board:
             print("Your stone was rejected. Next player, please.")
             return False
 
-class Draw:
-    def __init__(self):
-        self.player: int
-        self.position: tuple
-        self.accepted: bool
-        self.directions_enclosing: list
-
 class Host:
     """The Host controlls the game. players communicate with the host, and s/he interacts with the board."""
     def __init__(self):
@@ -235,9 +228,6 @@ class Host:
         self.my_board = Board(self)
         self.my_player = [Player(self), Player(self)]
         
-#    def create_info_sheet(self):
- #       return {'player':int , 'position':tuple , 'directions enclosing':list , 'stone accepted':bool}
-
     def setup_board(self):
         """Initially there are 4 stones at the center of the board, two in each players colour."""
         self.my_board.board[(3, 3)] = 0
