@@ -31,7 +31,7 @@ jobs:
         pytest -v test.py > test_output.txt
     - name: Create documentation with pydoc
       run: |
-        pydoc reversi > doc_output.txt
+        pydoc reversi_v01 > doc_output.txt
     - name: collect artifacts for upload
       run: |
         mkdir ./artifa
