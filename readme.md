@@ -51,7 +51,7 @@ unittests are in test06.py to be executed with pytest. This is included in the a
 
 ## 6 continuous delivery
 
-ci with circle ci:  [![<ORG_NAME>](https://circleci.com/gh/s81320/reversi.svg?style=svg)](https://circleci.com/gh/s81320/workflows/reversi/tree/master)
+ci with circle ci: [![CircleCI](https://circleci.com/gh/s81320/reversi_v01.svg?style=svg)](https://circleci.com/gh/s81320/reversi_v01)
 
 ## 7 ide
 
