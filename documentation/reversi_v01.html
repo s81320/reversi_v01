@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module reversi_v01</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>reversi_v01</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/silke/Documents/studiumDataScience/semester1/SWE_Edlich/reversi_v01/reversi_v01.py">/Users/silke/Documents/studiumDataScience/semester1/SWE_Edlich/reversi_v01/reversi_v01.py</a></font></td></tr></table>
+    <p><tt><a href="#Board">Board</a>&nbsp;game&nbsp;reversi&nbsp;(aka&nbsp;othello)&nbsp;for&nbsp;2&nbsp;players&nbsp;(or&nbsp;1&nbsp;player&nbsp;impersonating&nbsp;both&nbsp;the&nbsp;player&nbsp;and&nbsp;his/her&nbsp;opponent).<br>
+Game&nbsp;is&nbsp;played&nbsp;at&nbsp;one&nbsp;terminal.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="matplotlib.pyplot.html">matplotlib.pyplot</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="reversi_v01.html#Board">Board</a>
+</font></dt><dt><font face="helvetica, arial"><a href="reversi_v01.html#Draw">Draw</a>
+</font></dt><dt><font face="helvetica, arial"><a href="reversi_v01.html#Host">Host</a>
+</font></dt><dt><font face="helvetica, arial"><a href="reversi_v01.html#Player">Player</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Board">class <strong>Board</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Board">Board</a>(host)<br>
+&nbsp;<br>
+The&nbsp;reversi&nbsp;board&nbsp;is&nbsp;an&nbsp;8&nbsp;x&nbsp;8&nbsp;squares&nbsp;board.<br>
+The&nbsp;<a href="#Host">Host</a>&nbsp;sets&nbsp;stones&nbsp;on&nbsp;the&nbsp;board.<br>
+Players&nbsp;communicate&nbsp;to&nbsp;the&nbsp;<a href="#Host">Host</a>&nbsp;where&nbsp;the&nbsp;stone&nbsp;should&nbsp;be&nbsp;set<br>
+and&nbsp;the&nbsp;<a href="#Host">Host</a>&nbsp;checks&nbsp;for&nbsp;compliance&nbsp;with&nbsp;reversi&nbsp;rules.<br>
+&nbsp;<br>
+Once&nbsp;a&nbsp;stone&nbsp;is&nbsp;accepted&nbsp;and&nbsp;set&nbsp;the&nbsp;board&nbsp;is&nbsp;updated&nbsp;according&nbsp;to&nbsp;reversi&nbsp;rules:<br>
+Stones&nbsp;of&nbsp;the&nbsp;opponent&nbsp;that&nbsp;are&nbsp;enclosed&nbsp;(along&nbsp;a&nbsp;straight&nbsp;line:&nbsp;up/down-wards,&nbsp;left-to-right&nbsp;or&nbsp;in&nbsp;a&nbsp;diagonal&nbsp;fashion)<br>
+by&nbsp;the&nbsp;new&nbsp;stone&nbsp;of&nbsp;the&nbsp;active&nbsp;player&nbsp;and&nbsp;an&nbsp;old&nbsp;stone&nbsp;(also&nbsp;belonging&nbsp;to&nbsp;the&nbsp;active&nbsp;player)&nbsp;change&nbsp;colour<br>
+and&nbsp;become&nbsp;stones&nbsp;of&nbsp;the&nbsp;active&nbsp;player.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Board-__init__"><strong>__init__</strong></a>(self, host)</dt><dd><tt>init.</tt></dd></dl>
+
+<dl><dt><a name="Board-check_enclose_opponent"><strong>check_enclose_opponent</strong></a>(self, player_id, position)</dt><dd><tt>A&nbsp;player&nbsp;(player_id)&nbsp;canset&nbsp;a&nbsp;stone&nbsp;at&nbsp;a&nbsp;(position)&nbsp;if&nbsp;-&nbsp;along&nbsp;a&nbsp;line&nbsp;of&nbsp;stones&nbsp;on&nbsp;the&nbsp;board&nbsp;-<br>
+an&nbsp;enclosing&nbsp;of&nbsp;the&nbsp;opponents&nbsp;stones&nbsp;is&nbsp;created.<br>
+If&nbsp;player&nbsp;1&nbsp;sets&nbsp;a&nbsp;stone&nbsp;right&nbsp;next&nbsp;to&nbsp;a&nbsp;line&nbsp;like&nbsp;0&nbsp;0&nbsp;1&nbsp;so&nbsp;that&nbsp;it&nbsp;becomes&nbsp;1&nbsp;0&nbsp;0&nbsp;1,<br>
+or&nbsp;1&nbsp;0&nbsp;0&nbsp;0&nbsp;so&nbsp;that&nbsp;it&nbsp;becomes&nbsp;1&nbsp;0&nbsp;0&nbsp;0&nbsp;1.<br>
+Similarly&nbsp;for&nbsp;up&nbsp;-&nbsp;down&nbsp;directions&nbsp;or&nbsp;on&nbsp;other&nbsp;directions&nbsp;like&nbsp;south&nbsp;west&nbsp;to&nbsp;north&nbsp;east.<br>
+&nbsp;<br>
+Starting&nbsp;from&nbsp;all&nbsp;possible&nbsp;directions&nbsp;reduce&nbsp;to&nbsp;ingoing&nbsp;directions:<br>
+positions,&nbsp;such&nbsp;that&nbsp;position&nbsp;+&nbsp;direction&nbsp;stays&nbsp;on&nbsp;the&nbsp;board<br>
+From&nbsp;all&nbsp;ingoing&nbsp;directions&nbsp;reduce&nbsp;to&nbsp;directions&nbsp;that&nbsp;touch&nbsp;an&nbsp;opponents&nbsp;stone:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;that&nbsp;are&nbsp;directly&nbsp;adjacent&nbsp;to&nbsp;a&nbsp;stone&nbsp;of&nbsp;the&nbsp;opponent<br>
+From&nbsp;these&nbsp;directions&nbsp;reduce&nbsp;to&nbsp;directions&nbsp;that&nbsp;enclose&nbsp;the&nbsp;opponents&nbsp;stones.</tt></dd></dl>
+
+<dl><dt><a name="Board-check_for_different_colour"><strong>check_for_different_colour</strong></a>(self, arg1_position, arg2)</dt><dd><tt>Returns&nbsp;True&nbsp;if&nbsp;arg1_position&nbsp;is&nbsp;a&nbsp;position&nbsp;(type&nbsp;tuple)&nbsp;and<br>
+occupied&nbsp;and&nbsp;with&nbsp;a&nbsp;different&nbsp;colour&nbsp;from&nbsp;arg2,&nbsp;which&nbsp;may&nbsp;be&nbsp;a&nbsp;position&nbsp;or&nbsp;a&nbsp;colour&nbsp;(type&nbsp;tuple&nbsp;or&nbsp;int).<br>
+So&nbsp;the&nbsp;ordering&nbsp;is&nbsp;imortant&nbsp;here.&nbsp;There&nbsp;is&nbsp;flexibility&nbsp;only&nbsp;in&nbsp;the&nbsp;second&nbsp;argument.</tt></dd></dl>
+
+<dl><dt><a name="Board-check_for_same_colour"><strong>check_for_same_colour</strong></a>(self, arg1_position, arg2)</dt><dd><tt>Should&nbsp;be&nbsp;called&nbsp;with&nbsp;arguments&nbsp;either&nbsp;of&nbsp;type&nbsp;tuple&nbsp;or&nbsp;the&nbsp;same&nbsp;as&nbsp;player.number:&nbsp;int&nbsp;(with&nbsp;values&nbsp;0&nbsp;or&nbsp;1).<br>
+If&nbsp;it&nbsp;is&nbsp;a&nbsp;tuple,&nbsp;it&nbsp;is&nbsp;a&nbsp;position&nbsp;on&nbsp;the&nbsp;board&nbsp;and&nbsp;the&nbsp;colour&nbsp;has&nbsp;to&nbsp;be&nbsp;looked&nbsp;up&nbsp;when&nbsp;comparing.<br>
+If&nbsp;an&nbsp;argument&nbsp;is&nbsp;an&nbsp;int,&nbsp;it&nbsp;already&nbsp;denotes&nbsp;a&nbsp;colour&nbsp;/&nbsp;a&nbsp;players&nbsp;id&nbsp;and&nbsp;thus&nbsp;its&nbsp;colour.</tt></dd></dl>
+
+<dl><dt><a name="Board-check_position_exists"><strong>check_position_exists</strong></a>(self, position)</dt><dd><tt>Returns&nbsp;True&nbsp;iff&nbsp;(position)&nbsp;is&nbsp;on&nbsp;the&nbsp;board.</tt></dd></dl>
+
+<dl><dt><a name="Board-check_position_for_same_colour"><strong>check_position_for_same_colour</strong></a>(self, position1, position2)</dt><dd><tt>Returns&nbsp;True&nbsp;if&nbsp;both&nbsp;positions&nbsp;are&nbsp;occupied&nbsp;by&nbsp;the&nbsp;same&nbsp;player.</tt></dd></dl>
+
+<dl><dt><a name="Board-check_position_for_same_occupancy"><strong>check_position_for_same_occupancy</strong></a>(self, position1, position2)</dt><dd><tt>Returns&nbsp;True&nbsp;if&nbsp;on&nbsp;both&nbsp;positions&nbsp;there&nbsp;is&nbsp;the&nbsp;same&nbsp;colour&nbsp;or&nbsp;if&nbsp;both&nbsp;positions&nbsp;are&nbsp;empty.</tt></dd></dl>
+
+<dl><dt><a name="Board-check_position_free"><strong>check_position_free</strong></a>(self, position)</dt><dd><tt>Check&nbsp;if&nbsp;a&nbsp;(position)&nbsp;is&nbsp;free.&nbsp;Returns&nbsp;True&nbsp;iff&nbsp;no&nbsp;stone&nbsp;is&nbsp;already&nbsp;placed&nbsp;on&nbsp;that&nbsp;position.</tt></dd></dl>
+
+<dl><dt><a name="Board-check_stone"><strong>check_stone</strong></a>(self, player_id, position)</dt><dd><tt>Calls&nbsp;three&nbsp;other&nbsp;check-functions.<br>
+Check&nbsp;if&nbsp;the&nbsp;proposed&nbsp;position&nbsp;is&nbsp;within&nbsp;the&nbsp;boundries&nbsp;of&nbsp;the&nbsp;board,<br>
+if&nbsp;the&nbsp;position&nbsp;is&nbsp;free&nbsp;/&nbsp;empty&nbsp;and&nbsp;if&nbsp;it&nbsp;creates&nbsp;an&nbsp;enclosing&nbsp;of&nbsp;the&nbsp;stones&nbsp;of&nbsp;the&nbsp;opponent.</tt></dd></dl>
+
+<dl><dt><a name="Board-create_directions_ingoing"><strong>create_directions_ingoing</strong></a>(self, position)</dt><dd><tt>Given&nbsp;a&nbsp;(position)&nbsp;this&nbsp;function<br>
+returns&nbsp;all&nbsp;directions&nbsp;that&nbsp;lead&nbsp;to&nbsp;a&nbsp;position&nbsp;that&nbsp;is&nbsp;adjacent&nbsp;to&nbsp;this&nbsp;position&nbsp;and&nbsp;on&nbsp;the&nbsp;board.</tt></dd></dl>
+
+<dl><dt><a name="Board-get_scores"><strong>get_scores</strong></a>(self)</dt><dd><tt>simple&nbsp;getter&nbsp;function.&nbsp;Returns&nbsp;the&nbsp;score&nbsp;of&nbsp;both&nbsp;(possibly&nbsp;more,&nbsp;later&nbsp;...)&nbsp;players.</tt></dd></dl>
+
+<dl><dt><a name="Board-print_board"><strong>print_board</strong></a>(self)</dt><dd><tt>Outputs&nbsp;the&nbsp;board&nbsp;as&nbsp;a&nbsp;graph.</tt></dd></dl>
+
+<dl><dt><a name="Board-select_directions_enclosing"><strong>select_directions_enclosing</strong></a>(self, player_id, start_pos, directions)</dt><dd><tt>Filters&nbsp;directions&nbsp;d&nbsp;such&nbsp;that&nbsp;along&nbsp;the&nbsp;beam&nbsp;starting&nbsp;in&nbsp;start_pos&nbsp;and&nbsp;in&nbsp;direction&nbsp;d<br>
+at&nbsp;some&nbsp;time&nbsp;another&nbsp;stone&nbsp;is&nbsp;met&nbsp;that&nbsp;has&nbsp;the&nbsp;colour&nbsp;belonging&nbsp;to&nbsp;(player_id).<br>
+This&nbsp;means&nbsp;setting&nbsp;a&nbsp;stone&nbsp;at&nbsp;start_pos&nbsp;would&nbsp;create&nbsp;an&nbsp;enclosing&nbsp;of&nbsp;the&nbsp;opponent&nbsp;players&nbsp;stones.</tt></dd></dl>
+
+<dl><dt><a name="Board-select_directions_touching"><strong>select_directions_touching</strong></a>(self, player_id, position, directions)</dt><dd><tt>Filters&nbsp;directions&nbsp;such&nbsp;that&nbsp;(position)&nbsp;+&nbsp;(direction)&nbsp;is<br>
+of&nbsp;different&nbsp;colour&nbsp;than&nbsp;the&nbsp;players&nbsp;own&nbsp;stone&nbsp;(player_id).<br>
+Requires&nbsp;input&nbsp;(directions)&nbsp;to&nbsp;be&nbsp;of&nbsp;ingoing&nbsp;directions&nbsp;only.</tt></dd></dl>
+
+<dl><dt><a name="Board-set_stone"><strong>set_stone</strong></a>(self, player_id, position)</dt><dd><tt>A&nbsp;stone&nbsp;is&nbsp;set&nbsp;on&nbsp;the&nbsp;board.&nbsp;Input:&nbsp;who&nbsp;(player_id_)&nbsp;sets&nbsp;the&nbsp;stone&nbsp;where&nbsp;(position).</tt></dd></dl>
+
+<dl><dt><a name="Board-update_board"><strong>update_board</strong></a>(self, player_id)</dt><dd><tt>When&nbsp;a&nbsp;player&nbsp;has&nbsp;put&nbsp;a&nbsp;new&nbsp;stone&nbsp;on&nbsp;the&nbsp;board&nbsp;newly&nbsp;includes&nbsp;/&nbsp;cought&nbsp;stones&nbsp;turn&nbsp;change&nbsp;color</tt></dd></dl>
+
+<dl><dt><a name="Board-update_scores"><strong>update_scores</strong></a>(self)</dt><dd><tt>To&nbsp;be&nbsp;called&nbsp;after&nbsp;a&nbsp;new&nbsp;stone&nbsp;has&nbsp;been&nbsp;set.&nbsp;Calculates&nbsp;from&nbsp;scratch.</tt></dd></dl>
+
+<dl><dt><a name="Board-walk_on_beam"><strong>walk_on_beam</strong></a>(self, colour, position, direction)</dt><dd><tt>Recursion&nbsp;replacing&nbsp;a&nbsp;while&nbsp;loop.<br>
+On&nbsp;the&nbsp;reversi&nbsp;board&nbsp;a&nbsp;beam&nbsp;is&nbsp;formed<br>
+starting&nbsp;at&nbsp;the&nbsp;(position)&nbsp;a&nbsp;new&nbsp;stone&nbsp;may&nbsp;be&nbsp;[checking&nbsp;stone]&nbsp;or&nbsp;has&nbsp;been&nbsp;[update&nbsp;board]&nbsp;set<br>
+in&nbsp;a&nbsp;given&nbsp;(direction).<br>
+colour&nbsp;is&nbsp;the&nbsp;colour&nbsp;of&nbsp;the&nbsp;stone&nbsp;that&nbsp;may&nbsp;be&nbsp;or&nbsp;has&nbsp;been&nbsp;set.&nbsp;This&nbsp;is&nbsp;at&nbsp;(position).<br>
+&nbsp;<br>
+Walking&nbsp;on&nbsp;that&nbsp;beam&nbsp;we&nbsp;take&nbsp;one&nbsp;step&nbsp;at&nbsp;a&nbsp;time,&nbsp;only&nbsp;to&nbsp;the&nbsp;(next_pos).<br>
+We&nbsp;return&nbsp;False&nbsp;if&nbsp;the&nbsp;beam&nbsp;of&nbsp;opponents&nbsp;stone&nbsp;ends&nbsp;in&nbsp;an&nbsp;empty&nbsp;field&nbsp;or&nbsp;at&nbsp;the&nbsp;boundary&nbsp;of&nbsp;the&nbsp;board.<br>
+and&nbsp;True&nbsp;if&nbsp;we&nbsp;meet&nbsp;a&nbsp;stone&nbsp;of&nbsp;our&nbsp;initially&nbsp;set&nbsp;(colour).</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Draw">class <strong>Draw</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr><td bgcolor="#ffc8d8"><tt>&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Draw-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Host">class <strong>Host</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;<a href="#Host">Host</a>&nbsp;controlls&nbsp;the&nbsp;game.&nbsp;players&nbsp;communicate&nbsp;with&nbsp;the&nbsp;host,&nbsp;and&nbsp;s/he&nbsp;interacts&nbsp;with&nbsp;the&nbsp;board.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Host-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>The&nbsp;host&nbsp;is&nbsp;mediator&nbsp;between&nbsp;the&nbsp;boardt&nbsp;and&nbsp;two&nbsp;playerse.</tt></dd></dl>
+
+<dl><dt><a name="Host-evaluate_stone"><strong>evaluate_stone</strong></a>(self, player_id, position)</dt><dd><tt>Check&nbsp;stone&nbsp;and&nbsp;set&nbsp;it&nbsp;,&nbsp;return&nbsp;True&nbsp;or&nbsp;False</tt></dd></dl>
+
+<dl><dt><a name="Host-setup_board"><strong>setup_board</strong></a>(self)</dt><dd><tt>Initially&nbsp;there&nbsp;are&nbsp;4&nbsp;stones&nbsp;at&nbsp;the&nbsp;center&nbsp;of&nbsp;the&nbsp;board,&nbsp;two&nbsp;in&nbsp;each&nbsp;players&nbsp;colour.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Player">class <strong>Player</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Player">Player</a>(host)<br>
+&nbsp;<br>
+Two&nbsp;players&nbsp;compete&nbsp;against&nbsp;each&nbsp;other.<br>
+Players&nbsp;communicate&nbsp;through&nbsp;their&nbsp;mediator,&nbsp;the&nbsp;<a href="#Host">Host</a>.<br>
+Players&nbsp;are&nbsp;identified&nbsp;by&nbsp;their&nbsp;(number),&nbsp;either&nbsp;0&nbsp;or&nbsp;1.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Player-__init__"><strong>__init__</strong></a>(self, host)</dt><dd><tt>initialize.&nbsp;Set&nbsp;the&nbsp;number.&nbsp;increase&nbsp;the&nbsp;number&nbsp;of&nbsp;created&nbsp;players.</tt></dd></dl>
+
+<dl><dt><a name="Player-get_number"><strong>get_number</strong></a>(self)</dt><dd><tt>returns&nbsp;the&nbsp;ID&nbsp;-&nbsp;number&nbsp;of&nbsp;a&nbsp;player.</tt></dd></dl>
+
+<dl><dt><a name="Player-input_stone_position"><strong>input_stone_position</strong></a>(self)</dt><dd><tt>asks&nbsp;a&nbsp;player&nbsp;to&nbsp;give&nbsp;two&nbsp;integers&nbsp;as&nbsp;coordinates&nbsp;where&nbsp;to&nbsp;put&nbsp;his/her&nbsp;stone.<br>
+returns&nbsp;a&nbsp;position&nbsp;as&nbsp;a&nbsp;tuple.&nbsp;No&nbsp;error&nbsp;handling.</tt></dd></dl>
+
+<dl><dt><a name="Player-propose_stone"><strong>propose_stone</strong></a>(self)</dt><dd><tt>A&nbsp;player-<a href="builtins.html#object">object</a>&nbsp;gets&nbsp;a&nbsp;keyboard-input&nbsp;from&nbsp;the&nbsp;player-human.&nbsp;If&nbsp;not&nbsp;successful&nbsp;(out&nbsp;of&nbsp;bounds,&nbsp;not&nbsp;free),&nbsp;no&nbsp;stone&nbsp;is&nbsp;set&nbsp;and&nbsp;the&nbsp;game&nbsp;continues&nbsp;(with&nbsp;the&nbsp;next&nbsp;player).</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>max_num_players</strong> = 2</dl>
+
+<dl><dt><strong>num_players_created</strong> = 0</dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-main"><strong>main</strong></a>()</dt><dd><tt>Players&nbsp;act&nbsp;one&nbsp;at&nbsp;a&nbsp;time.&nbsp;Each&nbsp;time&nbsp;through&nbsp;the&nbsp;loop&nbsp;one&nbsp;player&nbsp;is&nbsp;allowed&nbsp;to&nbsp;set&nbsp;a&nbsp;stone.<br>
+The&nbsp;other&nbsp;player&nbsp;is&nbsp;sometimes&nbsp;called&nbsp;the&nbsp;opponent.<br>
+Roles&nbsp;change&nbsp;at&nbsp;the&nbsp;end&nbsp;of&nbsp;each&nbsp;loop.</tt></dd></dl>
+ <dl><dt><a name="-opponent"><strong>opponent</strong></a>(i)</dt><dd><tt>calculate&nbsp;the&nbsp;id&nbsp;for&nbsp;the&nbsp;other&nbsp;player,&nbsp;the&nbsp;opponent.</tt></dd></dl>
+</td></tr></table>
+</body></html>
