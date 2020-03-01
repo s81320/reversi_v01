@@ -1,5 +1,5 @@
 # 27.2.2020
-"""Board game reversi (aka othello) for 2 players. Game is played at one terminal."""
+"""Board game reversi (aka othello) for 2 players (or 1 player impersonating both the player and his/her opponent). Game is played at one terminal."""
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -20,7 +20,7 @@ class Player:
         self.last_stone_accepted = True
         Player.num_players_created = Player.num_players_created+1
 
-    def propose_stone(self):
+    def input_stone_position(self):
         """asks a player to give two integers as coordinates where to put his/her stone.
         returns a position as a tuple. No error handling."""
         pos = [-1, -1]
@@ -31,9 +31,9 @@ class Player:
             pos[i] = input("one co-ordinate, range 0 to 7:")
         return [int(pos[0]), int(pos[1])]
 
-    def negotiate_stone(self):
+    def propose_stone(self):
         """A player-object gets a keyboard-input from the player-human. If not successful (out of bounds, not free), no stone is set and the game continues (with the next player)."""
-        proposed_stone = self.propose_stone()
+        proposed_stone = self.input_stone_position()
         self.last_stone_accepted = self.my_host.evaluate_stone(self.get_number(), proposed_stone)
 
     def get_number(self):
@@ -220,12 +220,22 @@ class Board:
             print("Your stone was rejected. Next player, please.")
             return False
 
+class Draw:
+    def __init__(self):
+        self.player: int
+        self.position: tuple
+        self.accepted: bool
+        self.directions_enclosing: list
+
 class Host:
     """The Host controlls the game. players communicate with the host, and s/he interacts with the board."""
     def __init__(self):
         """The host is mediator between the boardt and two playerse."""
         self.my_board = Board(self)
         self.my_player = [Player(self), Player(self)]
+        
+#    def create_info_sheet(self):
+ #       return {'player':int , 'position':tuple , 'directions enclosing':list , 'stone accepted':bool}
 
     def setup_board(self):
         """Initially there are 4 stones at the center of the board, two in each players colour."""
@@ -241,7 +251,7 @@ class Host:
         return self.my_board.set_stone(player_id, tuple(position))
 
 def opponent(i):
-    """get the id for the other player, the opponent"""
+    """calculate the id for the other player, the opponent."""
     return (1+i)%2
 
 def main():
@@ -272,7 +282,7 @@ def main():
     last = 0
 
     while game_on:
-        host.my_player[current].negotiate_stone()
+        host.my_player[current].propose_stone()
         if host.my_player[current].last_stone_accepted:
             host.my_board.update_board(host.my_player[current].get_number())
             host.my_board.print_board()
