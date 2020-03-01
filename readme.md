@@ -1,3 +1,7 @@
+this is the first version, I will leave it as it is today, 01.March 2020.
+
+this projet was a homework for swe, 1. semester at beuth university. I really enjoyed it and have learned a lot from it. I have plans to improve it - and will start a new version for this.
+
 # pet project: reversi boardgame
 
 Wkipedia explains the rules of [reversi](https://en.wikipedia.org/wiki/Reversi). It is also known as Othello.
